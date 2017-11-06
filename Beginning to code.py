@@ -45,7 +45,7 @@ import numpy as np
 # 
 # ![img](https://dl2.pushbulletusercontent.com/vbQLyBgJMAF46sICGIOBqQGxrFnbvJFe/IMG_8700.JPG)
 
-# In[27]:
+# In[2]:
 
 # implementing some form of nodal analysis
 
@@ -117,8 +117,9 @@ def get_rs(lines, r_dict):
         try:
             rs.append(r_dict[str])
         except KeyError:
-            print("Error: no resistance value found for connection {}".format(line))
+            #print("Error: no resistance value found for connection {}".format(line))
             rs.append(None)
+            raise
     return rs
     
 def nodal_analysis(graph, node):
@@ -177,44 +178,66 @@ graph2_v = {
 # 
 # And we know $G_{ii}$ is the sum of $G$s connected to node $i$
 # 
-# And also that $G_{ij}$ is the negative sum of $G$s between $i$ and $j$
+# ~~And also that $G_{ij}$ is the negative sum of $G$s between $i$ and $j$~~
+# 
+# From the paper ["Modeling percolation..."](http://www.mdpi.com/1996-1944/8/10/5334), we read that $G_{ij}=0$ except when $i$ and $j$ have a *direct* connection by one resistor. When they do have a direct connection, $G_{ij} = -\frac{1}{R_{ij}}$
+# 
+# (note, this may be a simplification the authors of that paper used[{?}])
 
 # In[4]:
 
-graph = graph2
-graph_r = graph2_r
 
-# Set our known conditions
-graph2_v['B'] = -2.
-graph2_v['D'] = 2.
 
-def throw_up_hands():
-    print("I give up!")
-    raise ZeroDivisionError
+def G_matrix(graph, graph_r):
+    """
+    Returns a matrix of the conductances G[i][j], given a graph and 
+    a listing of the resistances of edges in the graph.
+    """
+    num_nodes = len(graph)
+    G = np.zeros((num_nodes, num_nodes))
+    ii=0
+    for i in graph:
+        jj=0
+        for j in graph:
 
-#Make a numpy array of the right shape G's
-num_nodes = len(graph2)
-G = np.zeros((num_nodes, num_nodes))
-ii=0
-for i in graph:
-    jj=0
-    for j in graph:
-        if i==j:
-            Gij = 1./sum(get_rs(get_connections(graph2, i),graph_r))
-            G[ii][jj] = Gij
-        jj += 1
-    ii += 1    
-G
+
+            if i==j: # i.e. if this element is on the diagonal
+                Gij = 1./sum(get_rs(get_connections(graph, i),graph_r))
+                G[ii][jj] = Gij
+            elif ii<jj: # i.e. if we're above the diagonal
+                #print([i,j])
+                # this sets Gij to the negative reciprocal of Rij if there is a 
+                # direct connection between nodes i and j. If not, it leaves it 0.
+                try:
+                    resistance = get_rs([[i,j]], graph_r)
+                    #print(resistance)
+                    Gij = 1./resistance[0]
+                    G[ii][jj] = Gij
+                except KeyError:
+                    pass # (it's already set to zero)
+            else: # i.e. if we're below the diagonal
+                if not G[jj][ii] == 0.:
+                    G[ii][jj] = G[jj][ii] # because the matrix is symmetric
+            jj += 1
+        ii += 1    
+    return G
+
 
 
 # To calculate the equivalent resistance between two points in the graph, here's a cno
 
-# In[ ]:
-
-
-
-
 # In[5]:
+
+###############################################################
+###############################################################
+###############################################################
+# code below here is not useful with the re-thought G matrix! #
+###############################################################
+###############################################################
+###############################################################
+
+
+# In[6]:
 
 # for reference 
 graph2 = {
@@ -227,7 +250,7 @@ graph2 = {
 }
 
 
-# In[13]:
+# In[7]:
 
 def paths_len_2(graph):
     """ 
@@ -250,7 +273,7 @@ def paths_len_2(graph):
 
 
 
-# In[ ]:
+# In[8]:
 
 [['A', 'B'],
  ['A', 'C'],
@@ -262,7 +285,7 @@ def paths_len_2(graph):
  ['E', 'F']]
 
 
-# In[7]:
+# In[9]:
 
 def all_paths(graph):
     """
@@ -289,10 +312,82 @@ def all_paths(graph):
     return all_paths
 
 
-# In[8]:
+# In[10]:
 
 #%%timeit
 #all_paths(graph2)
+
+
+# In[11]:
+
+###############################################################
+###############################################################
+###############################################################
+# code above here is not useful with the re-thought G matrix! #
+###############################################################
+###############################################################
+###############################################################
+
+
+# In[12]:
+
+graph2_r_alt = {
+    'AB': 1.,
+    'AC': 1.,
+    'BC': 1.,
+    'BD': 1.,
+    'CF': 1.,
+    'DE': 1.,
+    'DF': 1.,
+    'EF': 1.,
+}
+
+
+# In[13]:
+
+
+# Set our known conditions
+graph2_v['B'] = -2.
+graph2_v['D'] = 2.
+
+G = G_matrix(graph2, graph2_r_alt)
+
+graph = graph2
+test_nodes = ['E', 'B']
+
+#Put a 1A current between the nodes we're concerned with
+I = np.zeros(len(graph))
+first_I = True
+k = 0
+assert len(test_nodes) == 2
+for node in graph:
+    if node in test_nodes:
+        if first_I:
+            I[k] = 1.
+            first_I = False
+        else:
+            I[k] = -1.
+    k += 1
+V = np.linalg.solve(G, I)
+
+print("Currents: {}".format(I))
+print("Node voltages: {}".format(V)) # is the voltage at each node.
+
+# Now we use the voltages at the two nodes of interest
+# to get the equivalent resistance. We don't have to divide by 
+# the current since we used a 1A current.
+equivalent_resistance = abs(sum(I*V)) # numpy matrix operations make this really simple!
+print("The calculated equivalent resistance is {} V".format(equivalent_resistance))
+
+
+# In[ ]:
+
+
+
+
+# In[ ]:
+
+
 
 
 # In[ ]:

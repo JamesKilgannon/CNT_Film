@@ -11848,7 +11848,7 @@ $$I = \frac{V}{R}$$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># implementing some form of nodal analysis</span>
@@ -11921,8 +11921,9 @@ $$I = \frac{V}{R}$$</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">rs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_dict</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: no resistance value found for connection </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+            <span class="c1">#print(&quot;Error: no resistance value found for connection {}&quot;.format(line))</span>
             <span class="n">rs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">raise</span>
     <span class="k">return</span> <span class="n">rs</span>
     
 <span class="k">def</span> <span class="nf">nodal_analysis</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -12042,7 +12043,9 @@ $$</p>
 <p>Where in this case we'll use the DC simplification
 $G=\frac{1}{R}$</p>
 <p>And we know $G_{ii}$ is the sum of $G$s connected to node $i$</p>
-<p>And also that $G_{ij}$ is the negative sum of $G$s between $i$ and $j$</p>
+<p><del>And also that $G_{ij}$ is the negative sum of $G$s between $i$ and $j$</del></p>
+<p>From the paper <a href="http://www.mdpi.com/1996-1944/8/10/5334">"Modeling percolation..."</a>, we read that $G_{ij}=0$ except when $i$ and $j$ have a <em>direct</em> connection by one resistor. When they do have a direct connection, $G_{ij} = -\frac{1}{R_{ij}}$</p>
+<p>(note, this may be a simplification the authors of that paper used[{?}])</p>
 
 </div>
 </div>
@@ -12052,62 +12055,42 @@ $G=\frac{1}{R}$</p>
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">graph</span> <span class="o">=</span> <span class="n">graph2</span>
-<span class="n">graph_r</span> <span class="o">=</span> <span class="n">graph2_r</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">G_matrix</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">graph_r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a matrix of the conductances G[i][j], given a graph and </span>
+<span class="sd">    a listing of the resistances of edges in the graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">num_nodes</span><span class="p">))</span>
+    <span class="n">ii</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
+        <span class="n">jj</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
 
-<span class="c1"># Set our known conditions</span>
-<span class="n">graph2_v</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.</span>
-<span class="n">graph2_v</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.</span>
 
-<span class="k">def</span> <span class="nf">throw_up_hands</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I give up!&quot;</span><span class="p">)</span>
-    <span class="k">raise</span> <span class="ne">ZeroDivisionError</span>
-
-<span class="c1">#Make a numpy array of the right shape G&#39;s</span>
-<span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph2</span><span class="p">)</span>
-<span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">num_nodes</span><span class="p">))</span>
-<span class="n">ii</span><span class="o">=</span><span class="mi">0</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
-    <span class="n">jj</span><span class="o">=</span><span class="mi">0</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="n">j</span><span class="p">:</span>
-            <span class="n">Gij</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">get_rs</span><span class="p">(</span><span class="n">get_connections</span><span class="p">(</span><span class="n">graph2</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span><span class="n">graph_r</span><span class="p">))</span>
-            <span class="n">G</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Gij</span>
-        <span class="n">jj</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>    
-<span class="n">G</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="n">j</span><span class="p">:</span> <span class="c1"># i.e. if this element is on the diagonal</span>
+                <span class="n">Gij</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">get_rs</span><span class="p">(</span><span class="n">get_connections</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span><span class="n">graph_r</span><span class="p">))</span>
+                <span class="n">G</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Gij</span>
+            <span class="k">elif</span> <span class="n">ii</span><span class="o">&lt;</span><span class="n">jj</span><span class="p">:</span> <span class="c1"># i.e. if we&#39;re above the diagonal</span>
+                <span class="c1">#print([i,j])</span>
+                <span class="c1"># this sets Gij to the negative reciprocal of Rij if there is a </span>
+                <span class="c1"># direct connection between nodes i and j. If not, it leaves it 0.</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">resistance</span> <span class="o">=</span> <span class="n">get_rs</span><span class="p">([[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]],</span> <span class="n">graph_r</span><span class="p">)</span>
+                    <span class="c1">#print(resistance)</span>
+                    <span class="n">Gij</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">resistance</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">G</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Gij</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span> <span class="c1"># (it&#39;s already set to zero)</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># i.e. if we&#39;re below the diagonal</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">G</span><span class="p">[</span><span class="n">jj</span><span class="p">][</span><span class="n">ii</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+                    <span class="n">G</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">G</span><span class="p">[</span><span class="n">jj</span><span class="p">][</span><span class="n">ii</span><span class="p">]</span> <span class="c1"># because the matrix is symmetric</span>
+            <span class="n">jj</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>    
+    <span class="k">return</span> <span class="n">G</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[4]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>array([[ 0.09090909,  0.        ,  0.        ,  0.        ,  0.        ,
-         0.        ],
-       [ 0.        ,  0.00884956,  0.        ,  0.        ,  0.        ,
-         0.        ],
-       [ 0.        ,  0.        ,  0.2       ,  0.        ,  0.        ,
-         0.        ],
-       [ 0.        ,  0.        ,  0.        ,  0.00952381,  0.        ,
-         0.        ],
-       [ 0.        ,  0.        ,  0.        ,  0.        ,  0.05263158,
-         0.        ],
-       [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
-         0.05882353]])</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -12124,10 +12107,16 @@ $G=\frac{1}{R}$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">###############################################################</span>
+<span class="c1">###############################################################</span>
+<span class="c1">###############################################################</span>
+<span class="c1"># code below here is not useful with the re-thought G matrix! #</span>
+<span class="c1">###############################################################</span>
+<span class="c1">###############################################################</span>
+<span class="c1">###############################################################</span>
 </pre></div>
 
 </div>
@@ -12137,7 +12126,7 @@ $G=\frac{1}{R}$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># for reference </span>
@@ -12158,7 +12147,7 @@ $G=\frac{1}{R}$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">paths_len_2</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span>
@@ -12197,7 +12186,7 @@ $G=\frac{1}{R}$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">],</span>
@@ -12214,10 +12203,35 @@ $G=\frac{1}{R}$</p>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[[&#39;A&#39;, &#39;B&#39;],
+ [&#39;A&#39;, &#39;C&#39;],
+ [&#39;B&#39;, &#39;C&#39;],
+ [&#39;B&#39;, &#39;D&#39;],
+ [&#39;C&#39;, &#39;F&#39;],
+ [&#39;D&#39;, &#39;E&#39;],
+ [&#39;D&#39;, &#39;F&#39;],
+ [&#39;E&#39;, &#39;F&#39;]]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">all_paths</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span>
@@ -12252,11 +12266,140 @@ $G=\frac{1}{R}$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#%%timeit</span>
 <span class="c1">#all_paths(graph2)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">###############################################################</span>
+<span class="c1">###############################################################</span>
+<span class="c1">###############################################################</span>
+<span class="c1"># code above here is not useful with the re-thought G matrix! #</span>
+<span class="c1">###############################################################</span>
+<span class="c1">###############################################################</span>
+<span class="c1">###############################################################</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">graph2_r_alt</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;AB&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+    <span class="s1">&#39;AC&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+    <span class="s1">&#39;BC&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+    <span class="s1">&#39;BD&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+    <span class="s1">&#39;CF&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+    <span class="s1">&#39;DE&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+    <span class="s1">&#39;DF&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+    <span class="s1">&#39;EF&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set our known conditions</span>
+<span class="n">graph2_v</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.</span>
+<span class="n">graph2_v</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">G_matrix</span><span class="p">(</span><span class="n">graph2</span><span class="p">,</span> <span class="n">graph2_r_alt</span><span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">graph2</span>
+<span class="n">test_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]</span>
+
+<span class="c1">#Put a 1A current between the nodes we&#39;re concerned with</span>
+<span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">))</span>
+<span class="n">first_I</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">test_nodes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">first_I</span><span class="p">:</span>
+            <span class="n">I</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>
+            <span class="n">first_I</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">I</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span>
+    <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Currents: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">I</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Node voltages: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="p">))</span> <span class="c1"># is the voltage at each node.</span>
+
+<span class="c1"># Now we use the voltages at the two nodes of interest</span>
+<span class="c1"># to get the equivalent resistance. We don&#39;t have to divide by </span>
+<span class="c1"># the current since we used a 1A current.</span>
+<span class="n">equivalent_resistance</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">V</span><span class="p">))</span> <span class="c1"># numpy matrix operations make this really simple!</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The calculated equivalent resistance is </span><span class="si">{}</span><span class="s2"> V&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">equivalent_resistance</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Currents: [ 0.  1.  0.  0. -1.  0.]
+Node voltages: [ 2.18181818  0.05454545 -1.14545455 -0.05454545  1.81818182 -1.85454545]
+The calculated equivalent resistance is 1.7636363636363637 V
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
 </div>
