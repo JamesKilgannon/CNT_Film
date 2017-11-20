@@ -11,29 +11,6 @@ import networkx as nx
 get_ipython().magic('matplotlib inline')
 
 
-# ---
-# Let's say we want to represent the situation in a film of CNT as a mathematical graph (with nodes and lines). Make some simplifying assumptions:
-# 1. There is a resistance at each **node** (this corresponds with our greatly simplified picture of the physical reality)
-# 2. There is no resistance in the lines; just in the connections
-# 3. Each CNT intersects with exactly two others
-# 
-# Developing this idea:
-# * There are only ever two CNT involved at each node, meaning maximum four lines connected to the node.
-#     * Problem: resistance should be zero when staying on the same CNT but not zero when jumping from one to another.
-#     
-# 
-# Oh goodness this is very complex.
-# 
-# Ok figure that out later, let's code *something*. 
-# 
-# 
-# [Wikipedia: Nodal Analysis](https://en.wikipedia.org/wiki/Nodal_analysis)
-# 
-# Nodal analysis is based on Kirchhoff's Current Law, which says the sum of currents at a node is zero. Note positive currents come toward the node and negative currents go away from the node.
-# $$V=IR$$
-# $$I = \frac{V}{R}$$
-# 
-
 # Sample network
 # 
 # ![img](https://dl2.pushbulletusercontent.com/vbQLyBgJMAF46sICGIOBqQGxrFnbvJFe/IMG_8700.JPG)
@@ -45,6 +22,7 @@ get_ipython().magic('matplotlib inline')
 
 # In[2]:
 
+# this will draw the graph to the screen: 
 #nx.draw(example_graph, with_labels=True, font_weight='bold')
 
 
@@ -82,26 +60,28 @@ def set_currents(graph, check_nodes):
     Sets current of +1A at one of the nodes and -1A at the other
     to prepare for nodal analysis. Returns the new graph.
     """
+    graph_with_currents = graph.copy()
+    
     first_node = True
     for node in check_nodes:
         try:
             if first_node:
-                graph.nodes[node]['current'] = 1.
+                graph_with_currents.nodes[node]['current'] = 1.
                 first_node = False
             else:
-                graph.nodes[node]['current'] = -1.
+                graph_with_currents.nodes[node]['current'] = -1.
         except KeyError:
             print("Illegal node given as start or endpoint!")
             raise
-    return graph
+    return graph_with_currents
+
+
+# In[ ]:
+
+
 
 
 # In[5]:
-
-
-
-
-# In[6]:
 
 nodei = 'B'
 neighbors = list(example_graph.neighbors(nodei))
@@ -134,7 +114,7 @@ Gij
 # 
 # (note, this may be a simplification the authors of that paper used[{?}])
 
-# In[7]:
+# In[6]:
 
 
 
@@ -150,10 +130,17 @@ def G_matrix(graph):
     for nodei in graph:
         j = 0
         for nodej in graph:
-            # if the element is on the diagonal, Gjj is the reciprocal
-            # of the sum of the resistances attached to node j
+            # if the element is on the diagonal, Gjj is 
+            # the sum of the conductances attached to node j
             if i == j:
-                Gij = 1./sum(graph.edges[x, nodei]['resistance'] for x in list(graph.neighbors(nodei)))
+                
+                #wrong:
+                #Gij = 1./sum(graph.edges[x, nodei]['resistance'] for x in list(graph.neighbors(nodei)))
+                
+                #should be sum of conductances:
+                
+                Gij = sum(1./(graph.edges[x, nodei]['resistance']) for x in list(graph.neighbors(nodei)))
+                
                 G[i][j] = Gij
             # if the element is above the diagonal, Gij is the negative reciprocal
             # of Rij (if an edge ij exists). If not, Gij stays 0.
@@ -173,46 +160,47 @@ def G_matrix(graph):
 
 # To calculate the equivalent resistance between two points in the graph, here's a cno
 
-# In[8]:
-
-########################################################
-### up to here is what I've refactored into networkx ###
-########################################################
-
-
-# In[58]:
+# In[18]:
 
 def equivalent_resistance(graph, check_nodes):
     """
     Given a graph and a list of two check nodes,
     computes the equivalent resistance.
     """
+    graph_with_currents = graph.copy()
     # put a 1A current at one check node and a -1A current at the other
-    graph = set_currents(graph, check_nodes)
+    graph_with_currents = set_currents(graph_with_currents, check_nodes)
     
     # get the matrix of conductances, G[i][j]
     G = G_matrix(graph)
     
     # get the matrix of currents, I
-    I = np.array(list(graph.nodes[x]['current'] for x in graph.nodes))
-    
-    # run np.linalg.solve to get the matrix of voltages
-    V = np.linalg.solve(G, I)
-    
+    I = np.array(list(graph_with_currents.nodes[x]['current'] for x in graph_with_currents.nodes))
+  
+
     print(G)
     print(I)
-    print(V)
+
+    # run np.linalg.solve to get the matrix of voltages
+    try:
+        V = np.linalg.solve(G, I)
+        print(V)
+        
+            # use a simple numpy operation to compute the equivalent resistance
+        equivalent_resistance = abs(sum(I*V))
+        return equivalent_resistance
+    except:
+        print("Error! Could not solve the matrix equation, possibly because the G-matrix is singular")
+        raise
     
-    # use a simple numpy operation to compute the equivalent resistance
-    equivalent_resistance = abs(sum(I*V))
-    return equivalent_resistance
+
     
 
 
 
 
 
-# In[47]:
+# In[8]:
 
 example_graph = nx.Graph()
 example_graph.clear()
@@ -270,12 +258,7 @@ for cn in check_nodeses:
 # 
 # 3. Run `equivalent_resistance(graph, check_nodes)` to get the answer!
 
-# In[ ]:
-
-
-
-
-# In[54]:
+# In[35]:
 
 # Now that this seems to work, we should do some testing.
 
@@ -298,21 +281,55 @@ print(eq_r)
 nx.draw(graphA, with_labels=True, font_weight='bold')
 
 
-# In[63]:
+# In[10]:
+
+# that's wrong. 1/R = 1/3 + 1/6; R = 2
+
+
+# In[25]:
 
 
 
 graphB = nx.Graph()
 graphB.clear
-graphB.add_nodes_from((1,2,3,4), current=0.)
+graphB.add_nodes_from((1,2,3,4,5), current=0.)
 edges = [
     (1, 2, {'resistance': 2.}),
-    (2, 3, {'resistance': 2.}),
-    (3, 4, {'resistance': 2.})
+    (2, 3, {'resistance': 3.}),
+    (3, 4, {'resistance': 2.}),
+    (4, 5, {'resistance': 2.})
 ]
 graphB.add_edges_from(edges)
 
-check_nodes = (1, 3)
+check_nodes = (1, 5)
+
+nx.draw(graphB, with_labels=True, font_weight='bold')
+
+eq_r = equivalent_resistance(graphB, check_nodes)
+print(eq_r)
+
+
+
+# In[ ]:
+
+# also wrong. R = 2+2+2 = 6
+
+
+# In[39]:
+
+graphB = nx.Graph()
+graphB.clear
+graphB.add_nodes_from((1,2,3,4,'whyy'), current=0.)
+edges = [
+    (1, 2, {'resistance': 2.}),
+    (2, 3, {'resistance': 2.}),
+    (3, 4, {'resistance': 4.}),
+    (3, 1, {'resistance': 4.}),
+    ('whyy', 2, {'resistance': 2.})
+]
+graphB.add_edges_from(edges)
+
+check_nodes = (4, 'whyy')
 
 eq_r = equivalent_resistance(graphB, check_nodes)
 print(eq_r)
@@ -322,5 +339,15 @@ nx.draw(graphB, with_labels=True, font_weight='bold')
 
 # In[ ]:
 
-# The two above both fail, and that is a bummer.
+# should give something different
+
+
+# In[ ]:
+
+get_ipython().magic('pinfo np.linalg.solve')
+
+
+# In[ ]:
+
+
 
