@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[3]:
+# In[4]:
 
 from matplotlib import pyplot as plt
 from matplotlib import pylab #displays arrays as images for easy error checking
@@ -11,7 +11,7 @@ import networkx as nx
 get_ipython().magic('matplotlib inline')
 
 
-# In[4]:
+# In[2]:
 
 #Important variables
 network_size = 1000 #side length of network boundaries
@@ -45,7 +45,7 @@ CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 header = ['Length','x-value','y-value','slope','y-intercept','x-high']
 
 
-# In[5]:
+# In[3]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -60,7 +60,7 @@ for i in range(0,CNT_num_tubes):
 
 # Printing this boolean array will be a lot of information, especially as the number of tubes in the network grows. Since it is a boolean array and there are only two possible values, it will be easier to visualize and understand how many intersections there are by turning the array into an image where True is one color and False is another.
 
-# In[6]:
+# In[29]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 #this cell visually shows the true values as yellow pixels
@@ -83,7 +83,7 @@ print('Below is a list where each element represents how many intersections the 
 print(CNT_perTubeIntersect)
 
 
-# In[7]:
+# In[48]:
 
 #gives the indicies along the x-axis of the true values as the 
 #first array and the y-values as the second array
@@ -99,11 +99,6 @@ print(edges)
 
 
 # In[ ]:
-
-
-
-
-# In[8]:
 
 # We will use the wonderfully useful library networkx to allow us
 # to represent graphs in a nice way.
@@ -125,7 +120,7 @@ edges = [
 example_graph.add_edges_from(edges)
 
 
-# In[9]:
+# In[4]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 def num_intersect(network_size, CNT_length_normal, CNT_length_stddev, CNT_num_tubes, num_iterations=1000):
@@ -174,7 +169,7 @@ def num_intersect(network_size, CNT_length_normal, CNT_length_stddev, CNT_num_tu
     plt.show()
 
 
-# In[10]:
+# In[5]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 #run this cell to get a histogram of the number of connections for the given conditions
