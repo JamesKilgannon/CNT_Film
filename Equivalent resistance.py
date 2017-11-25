@@ -399,6 +399,11 @@ nx.draw(graphA, with_labels=True, font_weight='bold')
 # 
 # Check on those warnings; figure out whether lil_matrix is better?
 
+# In[1]:
+
+get_ipython().magic('pinfo lil_matrix')
+
+
 # In[ ]:
 
 
