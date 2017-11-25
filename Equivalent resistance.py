@@ -47,41 +47,34 @@ edges = [
 
 example_graph.add_edges_from(edges)
 
+# Scratch work to improve efficiency of G matrix function
 
-# In[4]:
-
-# we can assign a current at the two nodes we want to examine,
-# and leave zero current at the others:
-
-
-def set_currents(graph, check_nodes):
-    """
-    Takes a graph list of two nodes in that graph.
-    Sets current of +1A at one of the nodes and -1A at the other
-    to prepare for nodal analysis. Returns the new graph.
-    """
-    graph_with_currents = graph.copy()
+# This works to make everything except the diagonal
+for node1, node2 in example_graph.edges():
+    example_graph[node1][node2]['reciprocalR'] = 1.0 / example_graph[node1][node2]['resistance']
+    print("{}{}".format(node1, node2))
     
-    first_node = True
-    for node in check_nodes:
-        try:
-            if first_node:
-                graph_with_currents.nodes[node]['current'] = 1.
-                first_node = False
-            else:
-                graph_with_currents.nodes[node]['current'] = -1.
-        except KeyError:
-            print("Illegal node given as start or endpoint!")
-            raise
-    return graph_with_currents
+GGG = nx.adjacency_matrix(example_graph, weight='reciprocalR')
+# for the diagonal
+GGG.setdiag(np.squeeze(np.asarray(-nx.incidence_matrix(example_graph, 
+                                                      weight='reciprocalR').sum(axis=1))))
 
 
+
+
+
+
+
+print("GGG")
+print(GGG.todense())
+print("old fct")
+print(G_matrix(example_graph))
 # In[ ]:
 
 
 
 
-# In[5]:
+# In[4]:
 
 nodei = 'B'
 neighbors = list(example_graph.neighbors(nodei))
@@ -113,10 +106,7 @@ Gij
 # From the paper ["Modeling percolation..."](http://www.mdpi.com/1996-1944/8/10/5334), we read that $G_{ij}=0$ except when $i$ and $j$ have a *direct* connection by one resistor. When they do have a direct connection, $G_{ij} = -\frac{1}{R_{ij}}$
 # 
 # (note, this may be a simplification the authors of that paper used[{?}])
-
-# In[6]:
-
-
+# old (but almost definitely works) G matrix function
 
 def G_matrix(graph):
     """
@@ -134,12 +124,9 @@ def G_matrix(graph):
             # the sum of the conductances attached to node j
             if i == j:
                 
-                #wrong:
-                #Gij = 1./sum(graph.edges[x, nodei]['resistance'] for x in list(graph.neighbors(nodei)))
+               #should be **negative** sum of conductances:
                 
-                #should be sum of conductances:
-                
-                Gij = sum(1./(graph.edges[x, nodei]['resistance']) for x in list(graph.neighbors(nodei)))
+                Gij = -sum(1./(graph.edges[x, nodei]['resistance']) for x in list(graph.neighbors(nodei)))
                 
                 G[i][j] = Gij
             # if the element is above the diagonal, Gij is the negative reciprocal
@@ -157,10 +144,52 @@ def G_matrix(graph):
         i += 1
     return G
 
+# In[5]:
+
+def set_currents(graph, check_nodes):
+    """
+    Takes a graph list of two nodes in that graph.
+    Sets current of +1A at one of the nodes and -1A at the other
+    to prepare for nodal analysis. Returns the new graph.
+    """
+    graph_with_currents = graph.copy()
+    
+    first_node = True
+    for node in check_nodes:
+        try:
+            if first_node:
+                graph_with_currents.nodes[node]['current'] = 1.
+                first_node = False
+            else:
+                graph_with_currents.nodes[node]['current'] = -1.
+        except KeyError:
+            print("Illegal node given as start or endpoint!")
+            raise
+    return graph_with_currents
+
+
+# In[6]:
+
+# re-done G matrix function
+def G_matrix(graph):
+    """
+    Returns a matrix of the conductances G[i][j], given a networkx graph
+    whose edges hold resistance data.
+    """
+    # This works to make everything except the diagonal
+    for node1, node2 in graph.edges():
+        graph[node1][node2]['reciprocalR'] = 1.0 / graph[node1][node2]['resistance']
+
+    G = nx.adjacency_matrix(graph, weight='reciprocalR')
+    # for the diagonal
+    G.setdiag(np.squeeze(np.asarray(-nx.incidence_matrix(graph, 
+                                                          weight='reciprocalR').sum(axis=1))))
+    return G.toarray()
+
 
 # To calculate the equivalent resistance between two points in the graph, here's a cno
 
-# In[18]:
+# In[7]:
 
 def equivalent_resistance(graph, check_nodes):
     """
@@ -223,7 +252,7 @@ check_nodeses = list(example_graph.edges)
 
 for cn in check_nodeses:
     er = equivalent_resistance(example_graph, cn)
-    print("Check nodes: {}. The calculated equivalent resistance is {:.2f} V".format(cn, er))
+    print("Check nodes: {}. The calculated equivalent resistance is {:.2f} ohm".format(cn, er))
 
 
 # In[ ]:
@@ -258,7 +287,7 @@ for cn in check_nodeses:
 # 
 # 3. Run `equivalent_resistance(graph, check_nodes)` to get the answer!
 
-# In[35]:
+# In[9]:
 
 # Now that this seems to work, we should do some testing.
 
@@ -283,10 +312,10 @@ nx.draw(graphA, with_labels=True, font_weight='bold')
 
 # In[10]:
 
-# that's wrong. 1/R = 1/3 + 1/6; R = 2
+# that's right. 1/R = 1/3 + 1/6; R = 2
 
 
-# In[25]:
+# In[11]:
 
 
 
@@ -312,24 +341,24 @@ print(eq_r)
 
 # In[ ]:
 
-# also wrong. R = 2+2+2 = 6
 
 
-# In[39]:
+
+# In[12]:
 
 graphB = nx.Graph()
 graphB.clear
 graphB.add_nodes_from((1,2,3,4,'whyy'), current=0.)
 edges = [
-    (1, 2, {'resistance': 2.}),
-    (2, 3, {'resistance': 2.}),
-    (3, 4, {'resistance': 4.}),
-    (3, 1, {'resistance': 4.}),
-    ('whyy', 2, {'resistance': 2.})
+    (1, 2, {'resistance': 1.}),
+    (2, 3, {'resistance': 4.}),
+    (3, 4, {'resistance': 1.}),
+    (3, 1, {'resistance': 1.}),
+    ('whyy', 2, {'resistance': 1.})
 ]
 graphB.add_edges_from(edges)
 
-check_nodes = (4, 'whyy')
+check_nodes = ('whyy', 4)
 
 eq_r = equivalent_resistance(graphB, check_nodes)
 print(eq_r)
@@ -337,15 +366,38 @@ print(eq_r)
 nx.draw(graphB, with_labels=True, font_weight='bold')
 
 
-# In[ ]:
+# In[13]:
 
-# should give something different
+# Seems to be ignoring the connection (2,3)
 
 
-# In[ ]:
+# In[14]:
 
-get_ipython().magic('pinfo np.linalg.solve')
+# Now that this seems to work, we should do some testing.
 
+graphA = nx.Graph()
+graphA.clear
+graphA.add_nodes_from((1,2,3,4,5), current=0.)
+edges = [
+    (1, 2, {'resistance': 2.}),
+    (4, 2, {'resistance': 1.}),
+    (1, 3, {'resistance': 3.}),
+    (3, 4, {'resistance': 3.}),
+    (4, 5, {'resistance': 1.})
+]
+graphA.add_edges_from(edges)
+
+check_nodes = (1, 5)
+
+eq_r = equivalent_resistance(graphA, check_nodes)
+print(eq_r)
+
+nx.draw(graphA, with_labels=True, font_weight='bold')
+
+
+# # still to do:
+# 
+# Check on those warnings; figure out whether lil_matrix is better?
 
 # In[ ]:
 
