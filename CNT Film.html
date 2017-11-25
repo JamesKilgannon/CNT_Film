@@ -11775,42 +11775,15 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</pre></div>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pylab</span> <span class="c1">#displays arrays as images for easy error checking</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Important variables</span>
-<span class="n">network_size</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#side length of network boundaries</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">CNT</span><span class="p">():</span>
-    <span class="c1">#randomly assign length distributed around a set tube length</span>
-        <span class="c1">#need to average tube length and distribution</span>
-    <span class="c1">#randomly assign starting point</span>
-    <span class="c1">#randomly assign angle between 0 and 180</span>
-    
+<span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
 
 </div>
@@ -11823,23 +11796,36 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">EOL</span><span class="p">(</span><span class="n">endpoint_1</span><span class="p">,</span><span class="n">endpoint_2</span><span class="p">):</span>
-    <span class="c1">#Determines the slope, y-intercept of the parent line, and range of x-values of a line</span>
-    <span class="c1">#segment made by 2 points. Endpoints are input as a list of x and y values e.g. [x,y]</span>
-    <span class="n">x1</span> <span class="o">=</span> <span class="n">endpoint_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">y1</span> <span class="o">=</span> <span class="n">endpoint_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">x2</span> <span class="o">=</span> <span class="n">endpoint_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">y2</span> <span class="o">=</span> <span class="n">endpoint_2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    
-    <span class="c1">#Preventing undefined values for infinite slope</span>
-    <span class="k">if</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">:</span>
-        <span class="n">slope</span> <span class="o">=</span> <span class="mf">1e10</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span>
-    <span class="n">y_intercept</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">x1</span>
-    <span class="c1">#finding range of x-values the segment runs for to make determining intersection easier</span>
-    <span class="n">x_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">slope</span><span class="p">,</span> <span class="n">y_intercept</span><span class="p">,</span> <span class="n">x_range</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Important variables</span>
+<span class="n">network_size</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#side length of network boundaries</span>
+<span class="n">CNT_length_normal</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#normal length of CNT at center of distribution</span>
+<span class="n">CNT_length_stddev</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#standard deviation of CNT length from normal</span>
+<span class="n">CNT_num_tubes</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1">#number of tubes in film</span>
+
+<span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">#Generating tube information</span>
+<span class="c1">#randomly assigning tube lengths distributed around a set tube length</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">)</span>
+
+<span class="c1">#randomly assign starting point and orientation</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">CNT_num_tubes</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="c1">#applying scaling to random numbers so they match the needed values</span>
+<span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">CNT_init</span> <span class="o">=</span> <span class="n">CNT_init</span> <span class="o">*</span> <span class="n">scaling_factor</span>
+
+<span class="c1">#calculating the x-range for the tubes</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1">#calculating slope</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span>
+
+<span class="c1">#calculating the y-intercept of the lines</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="c1">#delete this in final code this is just a reference to know what is in each column</span>
+<span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Length&#39;</span><span class="p">,</span><span class="s1">&#39;x-value&#39;</span><span class="p">,</span><span class="s1">&#39;y-value&#39;</span><span class="p">,</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span><span class="s1">&#39;y-intercept&#39;</span><span class="p">,</span><span class="s1">&#39;x-high&#39;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -11852,7 +11838,408 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="n">EOL_1</span><span class="p">,</span><span class="n">EOL_2</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#generating a boolean array of the tubes that intersect</span>
+<span class="n">CNT_intersect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+    <span class="n">m1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+        <span class="n">x_intersect</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="ow">and</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
+            <span class="n">CNT_intersect</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Printing this boolean array will be a lot of information, especially as the number of tubes in the network grows. Since it is a boolean array and there are only two possible values, it will be easier to visualize and understand how many intersections there are by turning the array into an image where True is one color and False is another.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING</span>
+<span class="c1">#this cell visually shows the true values as yellow pixels</span>
+<span class="c1">#generating a boolean array of the tubes that intersect</span>
+<span class="n">CNT_intersectALL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+    <span class="n">m1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">x_intersect</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="ow">and</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
+            <span class="n">CNT_intersectALL</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">pylab</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)</span>
+<span class="n">CNT_perTubeIntersect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The number of intersections in the network is </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Below is a list where each element represents how many intersections the respective tube has:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CNT_perTubeIntersect</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The number of intersections in the network is 60.
+Below is a list where each element represents how many intersections the respective tube has:
+[9 3 0 0 0 2 0 0 0 0 0 0 1 0 4 4 0 2 0 0 1 0 0 2 0 1 0 0 4 0 0 0 4 0 0 0 0
+ 0 0 0 4 0 0 0 4 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 4 3
+ 0 4 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+AAAASUVORK5CYII=
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#gives the indicies along the x-axis of the true values as the </span>
+<span class="c1">#first array and the y-values as the second array</span>
+<span class="n">CNT_tube_num1</span><span class="p">,</span> <span class="n">CNT_tube_num2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)</span>
+
+<span class="c1">#formatting the intersection data so it will fit work with networkX</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)):</span>
+    <span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_tube_num1</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">CNT_tube_num2</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">10.</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CNT_tube_num1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CNT_tube_num2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[ 0  0  0  0  0  0  0  0  0  1  1  1  5  5 12 14 14 14 14 15 15 15 15 17 17
+ 20 23 23 25 28 28 28 28 32 32 32 32 40 40 40 40 44 44 44 44 51 51 65 72 72
+ 72 72 73 73 73 75 75 75 75 76]
+[ 5 23 28 32 44 65 72 73 81  5 32 78 32 75 43 23 28 65 72 17 28 51 79 23 28
+ 76 28 65 44 40 44 65 72 44 72 75 81 44 63 72 79 51 63 65 79 65 72 72 75 76
+ 79 81 75 78 93 76 78 80 81 81]
+[(0, 5, {&#39;resistance&#39;: 10.0}), (0, 23, {&#39;resistance&#39;: 10.0}), (0, 28, {&#39;resistance&#39;: 10.0}), (0, 32, {&#39;resistance&#39;: 10.0}), (0, 44, {&#39;resistance&#39;: 10.0}), (0, 65, {&#39;resistance&#39;: 10.0}), (0, 72, {&#39;resistance&#39;: 10.0}), (0, 73, {&#39;resistance&#39;: 10.0}), (0, 81, {&#39;resistance&#39;: 10.0}), (1, 5, {&#39;resistance&#39;: 10.0}), (1, 32, {&#39;resistance&#39;: 10.0}), (1, 78, {&#39;resistance&#39;: 10.0}), (5, 32, {&#39;resistance&#39;: 10.0}), (5, 75, {&#39;resistance&#39;: 10.0}), (12, 43, {&#39;resistance&#39;: 10.0}), (14, 23, {&#39;resistance&#39;: 10.0}), (14, 28, {&#39;resistance&#39;: 10.0}), (14, 65, {&#39;resistance&#39;: 10.0}), (14, 72, {&#39;resistance&#39;: 10.0}), (15, 17, {&#39;resistance&#39;: 10.0}), (15, 28, {&#39;resistance&#39;: 10.0}), (15, 51, {&#39;resistance&#39;: 10.0}), (15, 79, {&#39;resistance&#39;: 10.0}), (17, 23, {&#39;resistance&#39;: 10.0}), (17, 28, {&#39;resistance&#39;: 10.0}), (20, 76, {&#39;resistance&#39;: 10.0}), (23, 28, {&#39;resistance&#39;: 10.0}), (23, 65, {&#39;resistance&#39;: 10.0}), (25, 44, {&#39;resistance&#39;: 10.0}), (28, 40, {&#39;resistance&#39;: 10.0}), (28, 44, {&#39;resistance&#39;: 10.0}), (28, 65, {&#39;resistance&#39;: 10.0}), (28, 72, {&#39;resistance&#39;: 10.0}), (32, 44, {&#39;resistance&#39;: 10.0}), (32, 72, {&#39;resistance&#39;: 10.0}), (32, 75, {&#39;resistance&#39;: 10.0}), (32, 81, {&#39;resistance&#39;: 10.0}), (40, 44, {&#39;resistance&#39;: 10.0}), (40, 63, {&#39;resistance&#39;: 10.0}), (40, 72, {&#39;resistance&#39;: 10.0}), (40, 79, {&#39;resistance&#39;: 10.0}), (44, 51, {&#39;resistance&#39;: 10.0}), (44, 63, {&#39;resistance&#39;: 10.0}), (44, 65, {&#39;resistance&#39;: 10.0}), (44, 79, {&#39;resistance&#39;: 10.0}), (51, 65, {&#39;resistance&#39;: 10.0}), (51, 72, {&#39;resistance&#39;: 10.0}), (65, 72, {&#39;resistance&#39;: 10.0}), (72, 75, {&#39;resistance&#39;: 10.0}), (72, 76, {&#39;resistance&#39;: 10.0}), (72, 79, {&#39;resistance&#39;: 10.0}), (72, 81, {&#39;resistance&#39;: 10.0}), (73, 75, {&#39;resistance&#39;: 10.0}), (73, 78, {&#39;resistance&#39;: 10.0}), (73, 93, {&#39;resistance&#39;: 10.0}), (75, 76, {&#39;resistance&#39;: 10.0}), (75, 78, {&#39;resistance&#39;: 10.0}), (75, 80, {&#39;resistance&#39;: 10.0}), (75, 81, {&#39;resistance&#39;: 10.0}), (76, 81, {&#39;resistance&#39;: 10.0})]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># We will use the wonderfully useful library networkx to allow us</span>
+<span class="c1"># to represent graphs in a nice way.</span>
+
+<span class="n">example_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">example_graph</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">example_graph</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="s2">&quot;ABCDEF&quot;</span><span class="p">),</span> <span class="n">current</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span> <span class="c1"># initialize with all current = 0.</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">10.</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">3.</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">4.</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">15.</span><span class="p">}),</span>
+<span class="p">]</span>
+
+<span class="n">example_graph</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING</span>
+<span class="k">def</span> <span class="nf">num_intersect</span><span class="p">(</span><span class="n">network_size</span><span class="p">,</span> <span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">,</span> <span class="n">num_iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is for testing the number of intersections in the network</span>
+<span class="sd">    generated with the given inputs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#initializing empty array</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_iterations</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">num_iterations</span><span class="p">):</span>
+        <span class="c1">#initializing data array</span>
+        <span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+        <span class="c1">#Generating tube information</span>
+        <span class="c1">#randomly assigning tube lengths distributed around a set tube length</span>
+        <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">)</span>
+
+        <span class="c1">#randomly assign starting point and orientation</span>
+        <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">CNT_num_tubes</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="c1">#applying scaling to random numbers so they match the needed values</span>
+        <span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">CNT_init</span> <span class="o">=</span> <span class="n">CNT_init</span> <span class="o">*</span> <span class="n">scaling_factor</span>
+
+        <span class="c1">#calculating the x-range for the tubes</span>
+        <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1">#calculating slope</span>
+        <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span>
+
+        <span class="c1">#calculating the y-intercept of the lines</span>
+        <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1">#array_size = (CNT_init[:,0].size,CNT_init[0,:].size)</span>
+        <span class="n">CNT_intersect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+            <span class="n">m1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">b1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+                <span class="n">x_intersect</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="ow">and</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
+                    <span class="n">CNT_intersect</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING</span>
+<span class="c1">#run this cell to get a histogram of the number of connections for the given conditions</span>
+<span class="n">network_size</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#side length of network boundaries</span>
+<span class="n">CNT_length_normal</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#normal length of CNT at center of distribution</span>
+<span class="n">CNT_length_stddev</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#standard deviation of CNT length from normal</span>
+<span class="n">CNT_num_tubes</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1">#number of tubes in film</span>
+
+<span class="n">num_intersect</span><span class="p">(</span><span class="n">network_size</span><span class="p">,</span> <span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#THIS CELL IS OLD CODE AND IS NOT FOR USE IN THE FINAL PROGRAM</span>
+<span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="n">EOL_1</span><span class="p">,</span><span class="n">EOL_2</span><span class="p">):</span>
     <span class="c1">#Calculates if two line segments intersect given two equations of lines given the</span>
     <span class="c1">#slopes, y-intercepts, and acceptable range</span>
     <span class="c1">#Input format: [slope, y_intercept, x_range]</span>
@@ -11882,41 +12269,27 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">y_delta</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#THIS CELL IS OLD CODE AND IS NOT FOR USE IN THE FINAL PROGRAM</span>
+<span class="k">def</span> <span class="nf">EOL</span><span class="p">(</span><span class="n">endpoint_1</span><span class="p">,</span><span class="n">endpoint_2</span><span class="p">):</span>
+    <span class="c1">#Determines the slope, y-intercept of the parent line, and range of x-values of a line</span>
+    <span class="c1">#segment made by 2 points. Endpoints are input as a list of x and y values e.g. [x,y]</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">endpoint_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">endpoint_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">endpoint_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">endpoint_2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="c1">#Preventing undefined values for infinite slope</span>
+    <span class="k">if</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">:</span>
+        <span class="n">slope</span> <span class="o">=</span> <span class="mf">1e10</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span>
+    <span class="n">y_intercept</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">x1</span>
+    <span class="c1">#finding range of x-values the segment runs for to make determining intersection easier</span>
+    <span class="n">x_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">slope</span><span class="p">,</span> <span class="n">y_intercept</span><span class="p">,</span> <span class="n">x_range</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="mf">1e6</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[29]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>1000000.0</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Untitled</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>CNT_Master</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11773,6 +11773,104 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pylab</span> <span class="c1">#displays arrays as images for easy error checking</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Important variables</span>
+<span class="n">network_size</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#side length of network boundaries</span>
+<span class="n">CNT_length_normal</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#normal length of CNT at center of distribution</span>
+<span class="n">CNT_length_stddev</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#standard deviation of CNT length from normal</span>
+<span class="n">CNT_num_tubes</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1">#number of tubes in film</span>
+
+<span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">#Generating tube information</span>
+<span class="c1">#randomly assigning tube lengths distributed around a set tube length</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">)</span>
+
+<span class="c1">#randomly assign starting point and orientation</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">CNT_num_tubes</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="c1">#applying scaling to random numbers so they match the needed values</span>
+<span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">CNT_init</span> <span class="o">=</span> <span class="n">CNT_init</span> <span class="o">*</span> <span class="n">scaling_factor</span>
+
+<span class="c1">#calculating the x-range for the tubes</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1">#calculating slope</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span>
+
+<span class="c1">#calculating the y-intercept of the lines</span>
+<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#generating a boolean array of the tubes that intersect</span>
+<span class="n">CNT_intersect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+    <span class="n">m1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+        <span class="n">x_intersect</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="ow">and</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
+            <span class="n">CNT_intersect</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#gives the indicies along the x-axis of the true values as the </span>
+<span class="c1">#first array and the y-values as the second array</span>
+<span class="n">CNT_tube_num1</span><span class="p">,</span> <span class="n">CNT_tube_num2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)</span>
+
+<span class="c1">#formatting the intersection data so it will fit work with networkX</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)):</span>
+    <span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_tube_num1</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">CNT_tube_num2</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;resistance&#39;</span><span class="p">:</span> <span class="mf">10.</span><span class="p">})</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
