@@ -12,7 +12,7 @@ import networkx as nx
 get_ipython().magic('matplotlib inline')
 
 
-# In[3]:
+# In[2]:
 
 #Important variables
 network_size = 1000 #side length of network boundaries
@@ -43,7 +43,7 @@ CNT_init[:,3] = np.tan(CNT_init[:,3])
 CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 
 
-# In[4]:
+# In[3]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -56,7 +56,7 @@ for i in range(0,CNT_num_tubes):
             CNT_intersect[i,j] = True
 
 
-# In[5]:
+# In[4]:
 
 #gives the indicies along the x-axis of the true values as the 
 #first array and the y-values as the second array
@@ -68,12 +68,29 @@ for k in range(0,np.sum(CNT_intersect)):
     edges[k] = (CNT_tube_num1[k], CNT_tube_num2[k], {'resistance': 10.})
 
 
-# In[ ]:
+# In[5]:
+
+#generating a boolean array of the tubes that intersect and creating the G-matrix from that data.
+#The G-matrix has the resistances of all resistors (contact points) and what they are connected
+#to with the sum of the resistances of all intersections of the tube down the diaganol.
+G_matrix = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
+for i in range(0,CNT_num_tubes):
+    m1 = CNT_init[i,3]
+    b1 = CNT_init[i,4]
+    for j in range(0,CNT_num_tubes):
+        #Preventing errors from checking if a line intersects with itself
+        if i == j:
+            G_matrix[i,j] = False
+            continue
+        x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
+        if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
+            G_matrix[i,j] = True
+G_matrix = G_matrix * 2
+for k in range(0,CNT_num_tubes):
+    G_matrix[k,k] = np.sum(G_matrix[k,:])
 
 
-
-
-# In[1]:
+# In[6]:
 
 # Functions for equivalent resistance calculation
 
@@ -162,6 +179,11 @@ def equivalent_resistance(graph, check_nodes):
         # if np.linalg.solve fails, raise an error
         print("Error: could not solve the matrix equation. Is the G-matrix singular?")
         raise
+
+
+# In[ ]:
+
+
 
 
 # In[ ]:

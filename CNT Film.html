@@ -11775,7 +11775,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
@@ -11835,7 +11835,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#generating a boolean array of the tubes that intersect</span>
@@ -11866,7 +11866,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING</span>
@@ -11904,9 +11904,9 @@ div#notebook {
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>The number of intersections in the network is 60.
 Below is a list where each element represents how many intersections the respective tube has:
-[9 3 0 0 0 2 0 0 0 0 0 0 1 0 4 4 0 2 0 0 1 0 0 2 0 1 0 0 4 0 0 0 4 0 0 0 0
- 0 0 0 4 0 0 0 4 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 4 3
- 0 4 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+[0 0 9 0 0 0 0 4 0 7 0 0 0 2 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4 0 0 0 0 4 0 0
+ 0 0 6 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 1 3 0 0 0 2 3 2 1 0 1 0 1 0 0 0 0 0 0
+ 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0]
 </pre>
 </div>
 </div>
@@ -11918,64 +11918,63 @@ Below is a list where each element represents how many intersections the respect
 
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAP8AAAD8CAYAAAC4nHJkAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
-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
-AAAASUVORK5CYII=
+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
+/wGEcdscRskMigAAAABJRU5ErkJggg==
 "
 >
 </div>
@@ -11988,7 +11987,7 @@ AAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#gives the indicies along the x-axis of the true values as the </span>
@@ -12016,13 +12015,175 @@ AAAASUVORK5CYII=
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[ 0  0  0  0  0  0  0  0  0  1  1  1  5  5 12 14 14 14 14 15 15 15 15 17 17
- 20 23 23 25 28 28 28 28 32 32 32 32 40 40 40 40 44 44 44 44 51 51 65 72 72
- 72 72 73 73 73 75 75 75 75 76]
-[ 5 23 28 32 44 65 72 73 81  5 32 78 32 75 43 23 28 65 72 17 28 51 79 23 28
- 76 28 65 44 40 44 65 72 44 72 75 81 44 63 72 79 51 63 65 79 65 72 72 75 76
- 79 81 75 78 93 76 78 80 81 81]
-[(0, 5, {&#39;resistance&#39;: 10.0}), (0, 23, {&#39;resistance&#39;: 10.0}), (0, 28, {&#39;resistance&#39;: 10.0}), (0, 32, {&#39;resistance&#39;: 10.0}), (0, 44, {&#39;resistance&#39;: 10.0}), (0, 65, {&#39;resistance&#39;: 10.0}), (0, 72, {&#39;resistance&#39;: 10.0}), (0, 73, {&#39;resistance&#39;: 10.0}), (0, 81, {&#39;resistance&#39;: 10.0}), (1, 5, {&#39;resistance&#39;: 10.0}), (1, 32, {&#39;resistance&#39;: 10.0}), (1, 78, {&#39;resistance&#39;: 10.0}), (5, 32, {&#39;resistance&#39;: 10.0}), (5, 75, {&#39;resistance&#39;: 10.0}), (12, 43, {&#39;resistance&#39;: 10.0}), (14, 23, {&#39;resistance&#39;: 10.0}), (14, 28, {&#39;resistance&#39;: 10.0}), (14, 65, {&#39;resistance&#39;: 10.0}), (14, 72, {&#39;resistance&#39;: 10.0}), (15, 17, {&#39;resistance&#39;: 10.0}), (15, 28, {&#39;resistance&#39;: 10.0}), (15, 51, {&#39;resistance&#39;: 10.0}), (15, 79, {&#39;resistance&#39;: 10.0}), (17, 23, {&#39;resistance&#39;: 10.0}), (17, 28, {&#39;resistance&#39;: 10.0}), (20, 76, {&#39;resistance&#39;: 10.0}), (23, 28, {&#39;resistance&#39;: 10.0}), (23, 65, {&#39;resistance&#39;: 10.0}), (25, 44, {&#39;resistance&#39;: 10.0}), (28, 40, {&#39;resistance&#39;: 10.0}), (28, 44, {&#39;resistance&#39;: 10.0}), (28, 65, {&#39;resistance&#39;: 10.0}), (28, 72, {&#39;resistance&#39;: 10.0}), (32, 44, {&#39;resistance&#39;: 10.0}), (32, 72, {&#39;resistance&#39;: 10.0}), (32, 75, {&#39;resistance&#39;: 10.0}), (32, 81, {&#39;resistance&#39;: 10.0}), (40, 44, {&#39;resistance&#39;: 10.0}), (40, 63, {&#39;resistance&#39;: 10.0}), (40, 72, {&#39;resistance&#39;: 10.0}), (40, 79, {&#39;resistance&#39;: 10.0}), (44, 51, {&#39;resistance&#39;: 10.0}), (44, 63, {&#39;resistance&#39;: 10.0}), (44, 65, {&#39;resistance&#39;: 10.0}), (44, 79, {&#39;resistance&#39;: 10.0}), (51, 65, {&#39;resistance&#39;: 10.0}), (51, 72, {&#39;resistance&#39;: 10.0}), (65, 72, {&#39;resistance&#39;: 10.0}), (72, 75, {&#39;resistance&#39;: 10.0}), (72, 76, {&#39;resistance&#39;: 10.0}), (72, 79, {&#39;resistance&#39;: 10.0}), (72, 81, {&#39;resistance&#39;: 10.0}), (73, 75, {&#39;resistance&#39;: 10.0}), (73, 78, {&#39;resistance&#39;: 10.0}), (73, 93, {&#39;resistance&#39;: 10.0}), (75, 76, {&#39;resistance&#39;: 10.0}), (75, 78, {&#39;resistance&#39;: 10.0}), (75, 80, {&#39;resistance&#39;: 10.0}), (75, 81, {&#39;resistance&#39;: 10.0}), (76, 81, {&#39;resistance&#39;: 10.0})]
+<pre>[ 2  2  2  2  2  2  2  2  2  7  7  7  7  9  9  9  9  9  9  9 13 13 14 14 14
+ 14 29 29 29 29 34 34 34 34 39 39 39 39 39 39 46 46 46 55 56 56 56 60 60 61
+ 61 61 62 62 63 65 67 80 80 97]
+[ 7 14 39 55 56 60 61 65 67 39 55 56 65 14 34 39 62 65 67 97 29 88 34 39 46
+ 65 41 46 63 88 39 65 67 97 46 55 60 61 65 67 56 63 65 65 60 63 65 65 67 65
+ 67 97 65 97 65 67 97 97 98 98]
+[(2, 7, {&#39;resistance&#39;: 10.0}), (2, 14, {&#39;resistance&#39;: 10.0}), (2, 39, {&#39;resistance&#39;: 10.0}), (2, 55, {&#39;resistance&#39;: 10.0}), (2, 56, {&#39;resistance&#39;: 10.0}), (2, 60, {&#39;resistance&#39;: 10.0}), (2, 61, {&#39;resistance&#39;: 10.0}), (2, 65, {&#39;resistance&#39;: 10.0}), (2, 67, {&#39;resistance&#39;: 10.0}), (7, 39, {&#39;resistance&#39;: 10.0}), (7, 55, {&#39;resistance&#39;: 10.0}), (7, 56, {&#39;resistance&#39;: 10.0}), (7, 65, {&#39;resistance&#39;: 10.0}), (9, 14, {&#39;resistance&#39;: 10.0}), (9, 34, {&#39;resistance&#39;: 10.0}), (9, 39, {&#39;resistance&#39;: 10.0}), (9, 62, {&#39;resistance&#39;: 10.0}), (9, 65, {&#39;resistance&#39;: 10.0}), (9, 67, {&#39;resistance&#39;: 10.0}), (9, 97, {&#39;resistance&#39;: 10.0}), (13, 29, {&#39;resistance&#39;: 10.0}), (13, 88, {&#39;resistance&#39;: 10.0}), (14, 34, {&#39;resistance&#39;: 10.0}), (14, 39, {&#39;resistance&#39;: 10.0}), (14, 46, {&#39;resistance&#39;: 10.0}), (14, 65, {&#39;resistance&#39;: 10.0}), (29, 41, {&#39;resistance&#39;: 10.0}), (29, 46, {&#39;resistance&#39;: 10.0}), (29, 63, {&#39;resistance&#39;: 10.0}), (29, 88, {&#39;resistance&#39;: 10.0}), (34, 39, {&#39;resistance&#39;: 10.0}), (34, 65, {&#39;resistance&#39;: 10.0}), (34, 67, {&#39;resistance&#39;: 10.0}), (34, 97, {&#39;resistance&#39;: 10.0}), (39, 46, {&#39;resistance&#39;: 10.0}), (39, 55, {&#39;resistance&#39;: 10.0}), (39, 60, {&#39;resistance&#39;: 10.0}), (39, 61, {&#39;resistance&#39;: 10.0}), (39, 65, {&#39;resistance&#39;: 10.0}), (39, 67, {&#39;resistance&#39;: 10.0}), (46, 56, {&#39;resistance&#39;: 10.0}), (46, 63, {&#39;resistance&#39;: 10.0}), (46, 65, {&#39;resistance&#39;: 10.0}), (55, 65, {&#39;resistance&#39;: 10.0}), (56, 60, {&#39;resistance&#39;: 10.0}), (56, 63, {&#39;resistance&#39;: 10.0}), (56, 65, {&#39;resistance&#39;: 10.0}), (60, 65, {&#39;resistance&#39;: 10.0}), (60, 67, {&#39;resistance&#39;: 10.0}), (61, 65, {&#39;resistance&#39;: 10.0}), (61, 67, {&#39;resistance&#39;: 10.0}), (61, 97, {&#39;resistance&#39;: 10.0}), (62, 65, {&#39;resistance&#39;: 10.0}), (62, 97, {&#39;resistance&#39;: 10.0}), (63, 65, {&#39;resistance&#39;: 10.0}), (65, 67, {&#39;resistance&#39;: 10.0}), (67, 97, {&#39;resistance&#39;: 10.0}), (80, 97, {&#39;resistance&#39;: 10.0}), (80, 98, {&#39;resistance&#39;: 10.0}), (97, 98, {&#39;resistance&#39;: 10.0})]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#generating a boolean array of the tubes that intersect and creating the G-matrix from that data</span>
+<span class="n">G_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+    <span class="n">m1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+        <span class="c1">#Preventing errors from checking if a line intersects with itself</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+            <span class="n">G_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">continue</span>
+        <span class="n">x_intersect</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="ow">and</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
+            <span class="n">G_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">G_matrix</span> <span class="o">=</span> <span class="n">G_matrix</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+    <span class="n">G_matrix</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">G_matrix</span><span class="p">[</span><span class="n">k</span><span class="p">,:])</span>
+<span class="n">pylab</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">G_matrix</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[31]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;matplotlib.image.AxesImage at 0x1142fa8d0&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAP8AAAD8CAYAAAC4nHJkAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
+AAALEgAACxIB0t1+/AAADjRJREFUeJzt3W+IHPd9x/H3x5Is1TZKdG19PkuiFkTYFaH+06OW7VJM
+lKSpMZEfCSe4XIpBT+JGcQOp1JIHJRRCCfkDLgFRNxWNm9QoJhImxHYv8YMSInx2RGLrrEiN/0jK
+SafWbVQMVST07YOdtVfK3e3s7b+Z/X5ecNzO7MzOd3bvc7+Z2d/MKCIws3yuGnYBZjYcDr9ZUg6/
+WVIOv1lSDr9ZUg6/WVIOv1lSXYVf0kckHZV0XNLuXhVlZv2n5XbykbQC+BnwIeAk8ALwsYg40rvy
+zKxfVnYx7x8AxyPi5wCSvgVsBxYN/9VaHWu4totFmtlS/o+3+VWcV5lpuwn/euBEy/BJ4M4rJ5K0
+E9gJsIZruFPbulikmS3lUEyXnrbvB/wiYm9ETEbE5CpW93txZlZSN+E/BWxsGd5QjDOzGuhms/8F
+YLOkTTRC/yDw8U5e4PR3fvedxzc8MLvktCsnbgDg4tzpDsvszfxVVaX1atbStFRNy5m2OU2V1rnO
+lh3+iLgo6RHgGWAF8I8R8UrPKjOzvuqm5Scivgt8t0e1mNkALft7/uVYq7Hw0X6z/jkU05yLt0p9
+1efuvWZJOfxmSTn8Zkk5/GZJOfxmSTn8Zkk5/GZJddXJp+uFt3TxbNdVc/6RuwG4/rEf9rWmuqlS
+V9dOuuwu53WrsI6jxC2/WVLu4Wc2QtzDz8zacvjNkhrqAb9uHf/yVgDe9+iP2k5bp4NGndRap/Va
+ylLr4fP5f10nB8sX45bfLCkf8DMbIT7gZ2ZtOfxmSTn8Zkk5/GZJOfxmSdX6e/52rrptyzuPLx0e
+7v1D/d20Ve1vwC2/WVIOv1lStTmff6n5F5u3dVP/xOca1wPY+PnhXA+gk/UbVPfeqm2GLqYudbZT
+tfrd8psl5e69ZiPE3XvNrC2H3ywph98sKYffLCmH3ywph98sKYffLKm24Ze0UdIPJB2R9IqkXcX4
+MUnPSTpW/F7X/3LNrFfKtPwXgc9ExBZgK/BJSVuA3cB0RGwGpothM6uJtuGPiLmIeKl4/L/ALLAe
+2A7sKybbBzzQryLNrPc62ueXdBNwO3AIGI+IueKp08B4Tyszs74qHX5J1wHfBj4dEedan4vGCQIL
+niQgaaekGUkzFzjfVbFm1julwi9pFY3gPxERTxWjz0iaKJ6fAOYXmjci9kbEZERMrmJ1L2o2sx4o
+c7RfwOPAbER8qeWpg8BU8XgKOND78sysX8pczOMe4E+Bn0o6XIz7K+ALwJOSHgbeAHb0p0Qz64e2
+4Y+IfwcWOz/YJ+eb1ZR7+Jkl5fCbJeXwmyXl8Jsl5fCbJeXwmyXl8Jsl5fCbJeXwmyXl8Jsl5fCb
+JeXwmyXl8JslVeaU3tpq3tcdhn9v9PlH7gbg+sd+2NfldLLOVbzvfZU+s16r2vvtlt8sKTUuvzcY
+azUWd8qXADDrl0Mxzbl4a7Hrb1zGLb9ZUg6/WVIOv1lSDr9ZUg6/WVIOv1lSDr9ZUg6/WVK17t7b
+SXfJqnWtXMqJzzW6Am/8fPuuwHVar+W6ch0zrHM7vegG7ZbfLCl37zUbIe7ea2ZtOfxmSTn8Zkk5
+/GZJOfxmSTn8Zkk5/GZJOfxmSZXu3itpBTADnIqI+yWNAf8K3AS8DuyIiP/uaOFdXml2VLv3dlLr
+773U6M/xkzs676zV6/dkOZ9H01LzuHtvf3TS8u8CZluGdwPTEbEZmC6GzawmSnXvlbQB2Af8LfAX
+Rct/FLg3IuYkTQDPR8TNS72Ou/ea9Vc/uvd+BfgscKll3HhEzBWPTwPjC80oaaekGUkzFzhfcnFm
+1m9twy/pfmA+Il5cbJpobD4suAkREXsjYjIiJlexevmV1tzKiRt+bT+3n8sZxLKs3soc8LsH+Kik
++4A1wFpJ3wDOSJpo2eyf72ehZtZbbVv+iNgTERsi4ibgQeD7EfEQcBCYKiabAg70rUoz67luruTz
+BeBJSQ8DbwA7elPSaBrU11L++svK6ij8EfE88Hzx+L8AH7o3qyn38DNLyuE3S8rhN0vK4TdLyuE3
+S8rhN0uq1nfs6cSwTwPt1/K7ed1O7gw0qJoWOs172J/dqHLLb5aU79hjNkJ8xx4za8vhN0vK4TdL
+yuE3S8rhN0vK4TdLyuE3S8rhN0vK4TdLyuE3S8rhN0vK4TdLyuE3S8rhN0vK4TdLyuE3S8rhN0tq
+qNfwW+h6be2m9XXcLlel9+Xcx7cCsPZfftTT163SOo4St/xmSaW5eu+o6qY17HWL2mzxy1wVeLFl
+d7I1aN1xy2+WlK/eazZCfPVeM2vL4TdLyuE3S6pU+CW9V9J+Sa9KmpV0l6QxSc9JOlb8XtfvYs2s
+d8q2/F8FvhcRtwC3ArPAbmA6IjYD08WwmdVE2/BLeg/wR8DjABHxq4j4H2A7sK+YbB/wQL+KNLPe
+K9PJZxNwFvi6pFuBF4FdwHhEzBXTnAbGO164O3R0rYpdX8vUNP9IoyPQ9Y+1vz34la9XxXWuozKb
+/SuBO4CvRcTtwNtcsYkfjc4CC3YYkLRT0oykmQuc77ZeM+uRMi3/SeBkRBwqhvfTCP8ZSRMRMSdp
+AphfaOaI2AvshUYnnx7UbBVXpkVutvidbAHYu3qx1dy25Y+I08AJSTcXo7YBR4CDwFQxbgo4sKwK
+zGwoyp7Y8+fAE5KuBn4O/BmNfxxPSnoYeAPY0enCu91n875f/de92eJf+PAkAKuenWk7T93XuSpK
+hT8iDgOTCzzljvpmNVXrU3rr1AJUcSulXzUt53WbLX7zgiDQ+4uCjJJefGbu3muWlMNvlpTP5zcb
+IT6f38zaqvXVezs5sFTFA26LGdR69fo9af08273uldMupDn/M784DMAf33jbZfPW4bOsMrf8Zkl5
+n99shHif38zaqs0+/1Lzj9q+36gey2i1nOMDzWmO/dPvA7D5Ey/2qbrqG8iJPWY2mrzPbzZCvM9v
+Zm05/GZJOfxmSTn8Zkk5/GZJOfxmSTn8Zkk5/GZJOfxmSTn8Zkk5/GZJOfxmSTn8Zkk5/GZJOfxm
+STn8Zkk5/GZJOfxmSTn8Zkk5/GZJOfxmSTn8Zkk5/GZJlQq/pEclvSLpZUnflLRG0pik5yQdK36v
+63exZtY7bcMvaT3wKWAyIt4PrAAeBHYD0xGxGZguhs2sJsreq28l8BuSLgDXAL8A9gD3Fs/vA54H
+/rLH9ZkN3VW3bXnn8aXDR4ZYybuuvNchdH7PvrYtf0ScAr4IvAnMAb+MiGeB8YiYKyY7DYwvNL+k
+nZJmJM1c4HxHxZlZ/5TZ7F8HbAc2ATcC10p6qHWaaNzwb8Gb/kXE3oiYjIjJVazuQclm1gtlNvs/
+CLwWEWcBJD0F3A2ckTQREXOSJoD5PtZpNjRV2dRv1Ytbspc52v8msFXSNZIEbANmgYPAVDHNFHCg
+62rMbGDatvwRcUjSfuAl4CLwY2AvcB3wpKSHgTeAHf0s1Mx6S43d9cFYq7G4U9sGtjyzbA7FNOfi
+LZWZ1j38zJJy+M2ScvjNknL4zZJy+M2ScvjNknL4zZJy+M2ScvjNknL4zZJy+M2SKnsln1pqvdpJ
+L06B7EazlmHXYcPTvCJQVU4RdstvltRIt/xVamWrVIsNR1Va/Ca3/GZJOfxmSTn8Zkk5/GZJOfxm
+STn8Zkk5/GZJOfxmSTn8Zkk5/GZJOfxmSTn8Zkk5/GZJOfxmSTn8Zkk5/GZJ1fpiHqN6aaxRXa+F
+tF5qDcqt86DfnypdDq7p+Je3vvP4lr97Hei8Nrf8Zkk5/GZJ1XqzvyqbYL02quu1kOWsa6b3ZzHN
+TX2AS+NjjQfe7DezMmrd8psNQhW3NC6raZn1ueU3S0oRMbiFSWeBt4H/HNhCu/db1KfeOtUK9aq3
+LrX+TkT8dpkJBxp+AEkzETE50IV2oU711qlWqFe9daq1LG/2myXl8JslNYzw7x3CMrtRp3rrVCvU
+q9461VrKwPf5zawavNlvltTAwi/pI5KOSjouafeglluWpI2SfiDpiKRXJO0qxo9Jek7SseL3umHX
+2iRphaQfS3q6GK5yre+VtF/Sq5JmJd1V1XolPVr8Dbws6ZuS1lS11m4MJPySVgB/D/wJsAX4mKQt
+g1h2By4Cn4mILcBW4JNFjbuB6YjYDEwXw1WxC5htGa5yrV8FvhcRtwC30qi7cvVKWg98CpiMiPcD
+K4AHqWCtXYuIvv8AdwHPtAzvAfYMYtld1HwA+BBwFJgoxk0AR4ddW1HLBhp/hB8Ani7GVbXW9wCv
+URxjahlfuXqB9cAJYIxG9/engQ9XsdZufwa12d98Q5tOFuMqSdJNwO3AIWA8IuaKp04D40Mq60pf
+AT4LXGoZV9VaNwFnga8Xuyn/IOlaKlhvRJwCvgi8CcwBv4yIZ6lgrd3yAb8rSLoO+Dbw6Yg41/pc
+NP7tD/3rEUn3A/MR8eJi01Sl1sJK4A7gaxFxO40u3pdtNlel3mJffjuNf1g3AtdKeqh1mqrU2q1B
+hf8UsLFleEMxrlIkraIR/Cci4qli9BlJE8XzE8D8sOprcQ/wUUmvA98CPiDpG1SzVmhs6Z2MiEPF
+8H4a/wyqWO8Hgdci4mxEXACeAu6mmrV2ZVDhfwHYLGmTpKtpHEA5OKBllyJJwOPAbER8qeWpg8BU
+8XiKxrGAoYqIPRGxISJuovFefj8iHqKCtQJExGnghKSbi1HbgCNUs943ga2Srin+JrbRODhZxVq7
+M8ADKfcBPwP+A/jrYR/sWKC+P6SxKfcT4HDxcx/wmzQOrB0D/g0YG3atV9R9L+8e8KtsrcBtwEzx
+/n4HWFfVeoG/AV4FXgb+GVhd1Vq7+XEPP7OkfMDPLCmH3ywph98sKYffLCmH3ywph98sKYffLCmH
+3yyp/weHg/1WsI7A/wAAAABJRU5ErkJggg==
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[3 1]
+ [1 2]]
+[9 8]
+[ 2.  3.]
 </pre>
 </div>
 </div>

@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[4]:
+# In[1]:
 
 from matplotlib import pyplot as plt
 from matplotlib import pylab #displays arrays as images for easy error checking
@@ -45,7 +45,7 @@ CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 header = ['Length','x-value','y-value','slope','y-intercept','x-high']
 
 
-# In[3]:
+# In[11]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -60,7 +60,7 @@ for i in range(0,CNT_num_tubes):
 
 # Printing this boolean array will be a lot of information, especially as the number of tubes in the network grows. Since it is a boolean array and there are only two possible values, it will be easier to visualize and understand how many intersections there are by turning the array into an image where True is one color and False is another.
 
-# In[29]:
+# In[12]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 #this cell visually shows the true values as yellow pixels
@@ -83,7 +83,7 @@ print('Below is a list where each element represents how many intersections the 
 print(CNT_perTubeIntersect)
 
 
-# In[48]:
+# In[5]:
 
 #gives the indicies along the x-axis of the true values as the 
 #first array and the y-values as the second array
@@ -96,6 +96,37 @@ for k in range(0,np.sum(CNT_intersect)):
 print(CNT_tube_num1)
 print(CNT_tube_num2)
 print(edges)
+
+
+# In[31]:
+
+#generating a boolean array of the tubes that intersect and creating the G-matrix from that data
+G_matrix = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
+for i in range(0,CNT_num_tubes):
+    m1 = CNT_init[i,3]
+    b1 = CNT_init[i,4]
+    for j in range(0,CNT_num_tubes):
+        #Preventing errors from checking if a line intersects with itself
+        if i == j:
+            G_matrix[i,j] = False
+            continue
+        x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
+        if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
+            G_matrix[i,j] = True
+G_matrix = G_matrix * 2
+for k in range(0,CNT_num_tubes):
+    G_matrix[k,k] = np.sum(G_matrix[k,:])
+pylab.imshow(G_matrix)
+
+
+# In[34]:
+
+a = np.array([[3,1], [1,2]])
+b = np.array([9,8])
+x = np.linalg.solve(a, b)
+print(a)
+print(b)
+print(x)
 
 
 # In[ ]:
