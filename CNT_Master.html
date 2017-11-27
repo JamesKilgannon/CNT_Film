@@ -11775,7 +11775,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
@@ -11794,14 +11794,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Important variables</span>
 <span class="n">network_size</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#side length of network boundaries</span>
 <span class="n">CNT_length_normal</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#normal length of CNT at center of distribution</span>
 <span class="n">CNT_length_stddev</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#standard deviation of CNT length from normal</span>
-<span class="n">CNT_num_tubes</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1">#number of tubes in film</span>
+<span class="n">CNT_num_tubes</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#number of tubes in film</span>
 
 <span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 
@@ -11837,7 +11837,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#generating a boolean array of the tubes that intersect</span>
@@ -11862,7 +11862,133 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#DELETE THIS CELL IN FINAL CODE THIS CELL IS FOR DEBUGGING</span>
+<span class="n">pylab</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">CNT_intersect</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[22]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;matplotlib.image.AxesImage at 0x1165e47f0&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+Vv8LOGVRcPBx138AAAAASUVORK5CYII=
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#gives the indicies along the x-axis of the true values as the </span>
@@ -11882,36 +12008,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">graph</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
 <span class="n">graph</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">TypeError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-5-fc078741a398&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>graph <span class="ansi-blue-fg">=</span> nx<span class="ansi-blue-fg">.</span>graph<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      2</span> graph<span class="ansi-blue-fg">.</span>add_edges_from<span class="ansi-blue-fg">(</span>edges<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">TypeError</span>: &#39;module&#39; object is not callable</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -11935,7 +12039,7 @@ for k in range(0,CNT_num_tubes):
     G_matrix[k,k] = np.sum(G_matrix[k,:])
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Functions for equivalent resistance calculation</span>
@@ -12034,13 +12138,58 @@ for k in range(0,CNT_num_tubes):
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">equivalent_resistance</span><span class="p">(</span><span class="n">graph</span><span class="p">,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/Jimmie/anaconda/lib/python3.6/site-packages/scipy/sparse/compressed.py:774: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  SparseEfficiencyWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">KeyError</span>                                  Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-21-1ca08622135f&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>equivalent_resistance<span class="ansi-blue-fg">(</span>graph<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">&lt;ipython-input-20-c8a49e258319&gt;</span> in <span class="ansi-cyan-fg">equivalent_resistance</span><span class="ansi-blue-fg">(graph, check_nodes)</span>
+<span class="ansi-green-intense-fg ansi-bold">     56</span> 
+<span class="ansi-green-intense-fg ansi-bold">     57</span>     <span class="ansi-red-fg"># Get the matrix of currents, I</span>
+<span class="ansi-green-fg">---&gt; 58</span><span class="ansi-red-fg">     </span>I <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>array<span class="ansi-blue-fg">(</span>list<span class="ansi-blue-fg">(</span>graph_with_currents<span class="ansi-blue-fg">.</span>nodes<span class="ansi-blue-fg">[</span>x<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;current&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-green-fg">for</span> x <span class="ansi-green-fg">in</span> graph_with_currents<span class="ansi-blue-fg">.</span>nodes<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     59</span> 
+<span class="ansi-green-intense-fg ansi-bold">     60</span>     <span class="ansi-red-fg">#####################################</span>
+
+<span class="ansi-green-fg">&lt;ipython-input-20-c8a49e258319&gt;</span> in <span class="ansi-cyan-fg">&lt;genexpr&gt;</span><span class="ansi-blue-fg">(.0)</span>
+<span class="ansi-green-intense-fg ansi-bold">     56</span> 
+<span class="ansi-green-intense-fg ansi-bold">     57</span>     <span class="ansi-red-fg"># Get the matrix of currents, I</span>
+<span class="ansi-green-fg">---&gt; 58</span><span class="ansi-red-fg">     </span>I <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>array<span class="ansi-blue-fg">(</span>list<span class="ansi-blue-fg">(</span>graph_with_currents<span class="ansi-blue-fg">.</span>nodes<span class="ansi-blue-fg">[</span>x<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;current&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-green-fg">for</span> x <span class="ansi-green-fg">in</span> graph_with_currents<span class="ansi-blue-fg">.</span>nodes<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     59</span> 
+<span class="ansi-green-intense-fg ansi-bold">     60</span>     <span class="ansi-red-fg">#####################################</span>
+
+<span class="ansi-red-fg">KeyError</span>: &#39;current&#39;</pre>
+</div>
+</div>
+
 </div>
 </div>
 

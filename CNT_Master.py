@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[9]:
 
 from matplotlib import pyplot as plt
 from matplotlib import pylab #displays arrays as images for easy error checking
@@ -12,13 +12,13 @@ import networkx as nx
 get_ipython().magic('matplotlib inline')
 
 
-# In[2]:
+# In[16]:
 
 #Important variables
 network_size = 1000 #side length of network boundaries
 CNT_length_normal = 1000 #normal length of CNT at center of distribution
 CNT_length_stddev = 2 #standard deviation of CNT length from normal
-CNT_num_tubes = 100 #number of tubes in film
+CNT_num_tubes = 1000 #number of tubes in film
 
 CNT_init = np.zeros((CNT_num_tubes+2,6))
 
@@ -47,7 +47,7 @@ CNT_init[:,3] = np.tan(CNT_init[:,3])
 CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 
 
-# In[3]:
+# In[17]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -64,7 +64,13 @@ for i in range(0,CNT_num_tubes):
             CNT_intersect[i,j] = True
 
 
-# In[4]:
+# In[22]:
+
+#DELETE THIS CELL IN FINAL CODE THIS CELL IS FOR DEBUGGING
+pylab.imshow(CNT_intersect)
+
+
+# In[18]:
 
 #gives the indicies along the x-axis of the true values as the 
 #first array and the y-values as the second array
@@ -76,9 +82,9 @@ for k in range(0,np.sum(CNT_intersect)):
     edges[k] = (CNT_tube_num1[k], CNT_tube_num2[k], {'resistance': 10.})
 
 
-# In[5]:
+# In[19]:
 
-graph = nx.graph()
+graph = nx.Graph()
 graph.add_edges_from(edges)
 
 #generating a boolean array of the tubes that intersect and creating the G-matrix from that data.
@@ -99,7 +105,7 @@ for i in range(0,CNT_num_tubes):
 G_matrix = G_matrix * 2
 for k in range(0,CNT_num_tubes):
     G_matrix[k,k] = np.sum(G_matrix[k,:])
-# In[ ]:
+# In[20]:
 
 # Functions for equivalent resistance calculation
 
@@ -190,9 +196,9 @@ def equivalent_resistance(graph, check_nodes):
         raise
 
 
-# In[ ]:
+# In[21]:
 
-
+equivalent_resistance(graph,[0,1])
 
 
 # In[ ]:
