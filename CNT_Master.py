@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[9]:
+# In[2]:
 
 from matplotlib import pyplot as plt
 from matplotlib import pylab #displays arrays as images for easy error checking
@@ -12,7 +12,7 @@ import networkx as nx
 get_ipython().magic('matplotlib inline')
 
 
-# In[16]:
+# In[3]:
 
 #Important variables
 network_size = 1000 #side length of network boundaries
@@ -47,7 +47,7 @@ CNT_init[:,3] = np.tan(CNT_init[:,3])
 CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 
 
-# In[17]:
+# In[4]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -64,13 +64,13 @@ for i in range(0,CNT_num_tubes):
             CNT_intersect[i,j] = True
 
 
-# In[22]:
+# In[5]:
 
 #DELETE THIS CELL IN FINAL CODE THIS CELL IS FOR DEBUGGING
 pylab.imshow(CNT_intersect)
 
 
-# In[18]:
+# In[6]:
 
 #gives the indicies along the x-axis of the true values as the 
 #first array and the y-values as the second array
@@ -109,30 +109,6 @@ for k in range(0,CNT_num_tubes):
 
 # Functions for equivalent resistance calculation
 
-def set_currents(graph, check_nodes):
-    """
-    Takes a graph list of two nodes in that graph.
-    Sets current of +1A at one of the nodes and -1A at the other
-    to prepare for nodal analysis. Returns the new graph.
-    """
-    # Make sure we're not changing the input graph
-    graph_with_currents = graph.copy()
-    
-    # Set currents at the two nodes of interest to +1 and -1
-    first_node = True
-    for node in check_nodes:
-        try:
-            if first_node:
-                graph_with_currents.nodes[node]['current'] = 1.
-                first_node = False
-            else:
-                graph_with_currents.nodes[node]['current'] = -1.
-        # if the given check node is not in the graph, raise error
-        except KeyError:
-            print("Illegal node given as start or endpoint!")
-            raise
-    return graph_with_currents
-
 def G_matrix(graph):
     """
     Using the data from the input networkx graph, returns
@@ -154,17 +130,14 @@ def equivalent_resistance(graph, check_nodes):
     Given a graph and a list of two check nodes,
     computes the equivalent resistance.
     """
-    # Make sure we're not changing the input graph
-    graph_with_currents = graph.copy()
-    
-    # Put a 1A current at one check node and a -1A current at the other
-    graph_with_currents = set_currents(graph_with_currents, check_nodes)
-    
+
     # Get the G matrix
     G = G_matrix(graph)
     
     # Get the matrix of currents, I
-    I = np.array(list(graph_with_currents.nodes[x]['current'] for x in graph_with_currents.nodes))
+    I = np.zeros(CNT_num_tubes)
+    I[check_nodes[0]] = 1.
+    I[check_nodes[1]] = -1.
   
     #####################################
     ## Remove after debugging finishes ##
@@ -201,7 +174,4 @@ def equivalent_resistance(graph, check_nodes):
 equivalent_resistance(graph,[0,1])
 
 
-# In[ ]:
-
-
-
+# 
