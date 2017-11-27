@@ -11803,14 +11803,18 @@ div#notebook {
 <span class="n">CNT_length_stddev</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#standard deviation of CNT length from normal</span>
 <span class="n">CNT_num_tubes</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1">#number of tubes in film</span>
 
-<span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">#creating the pseudo tubes that will act as the edges in the network</span>
+<span class="n">CNT_init</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">=</span> <span class="p">[[</span><span class="n">network_size</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">network_size</span><span class="p">],</span>
+                   <span class="p">[</span><span class="n">network_size</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">network_size</span><span class="p">,</span><span class="n">network_size</span><span class="p">]]</span>
 
 <span class="c1">#Generating tube information</span>
 <span class="c1">#randomly assigning tube lengths distributed around a set tube length</span>
-<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">)</span>
+<span class="n">CNT_init</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">)</span>
 
 <span class="c1">#randomly assign starting point and orientation</span>
-<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">CNT_num_tubes</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">CNT_init</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">CNT_num_tubes</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
 <span class="c1">#applying scaling to random numbers so they match the needed values</span>
 <span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -11842,6 +11846,10 @@ div#notebook {
     <span class="n">m1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">b1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+        <span class="c1">#checking for parallel tubes</span>
+        <span class="k">if</span> <span class="n">m1</span> <span class="o">==</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">]:</span>
+            <span class="n">CNT_intersect</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">continue</span>
         <span class="n">x_intersect</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="ow">and</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
             <span class="n">CNT_intersect</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
@@ -11877,34 +11885,57 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#generating a boolean array of the tubes that intersect and creating the G-matrix from that data.</span>
-<span class="c1">#The G-matrix has the resistances of all resistors (contact points) and what they are connected</span>
-<span class="c1">#to with the sum of the resistances of all intersections of the tube down the diaganol.</span>
-<span class="n">G_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
-    <span class="n">m1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
-    <span class="n">b1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
-        <span class="c1">#Preventing errors from checking if a line intersects with itself</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
-            <span class="n">G_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">continue</span>
-        <span class="n">x_intersect</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="ow">and</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
-            <span class="n">G_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">G_matrix</span> <span class="o">=</span> <span class="n">G_matrix</span> <span class="o">*</span> <span class="mi">2</span>
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
-    <span class="n">G_matrix</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">G_matrix</span><span class="p">[</span><span class="n">k</span><span class="p">,:])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">graph</span><span class="p">()</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">TypeError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-5-fc078741a398&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>graph <span class="ansi-blue-fg">=</span> nx<span class="ansi-blue-fg">.</span>graph<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> graph<span class="ansi-blue-fg">.</span>add_edges_from<span class="ansi-blue-fg">(</span>edges<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">TypeError</span>: &#39;module&#39; object is not callable</pre>
 </div>
+</div>
+
+</div>
+</div>
+
+</div>#generating a boolean array of the tubes that intersect and creating the G-matrix from that data.
+#The G-matrix has the resistances of all resistors (contact points) and what they are connected
+#to with the sum of the resistances of all intersections of the tube down the diaganol.
+G_matrix = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
+for i in range(0,CNT_num_tubes):
+    m1 = CNT_init[i,3]
+    b1 = CNT_init[i,4]
+    for j in range(0,CNT_num_tubes):
+        #Preventing errors from checking if a line intersects with itself
+        if i == j:
+            G_matrix[i,j] = False
+            continue
+        x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
+        if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
+            G_matrix[i,j] = True
+G_matrix = G_matrix * 2
+for k in range(0,CNT_num_tubes):
+    G_matrix[k,k] = np.sum(G_matrix[k,:])
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Functions for equivalent resistance calculation</span>

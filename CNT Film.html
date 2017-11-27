@@ -11775,7 +11775,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
@@ -11793,7 +11793,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Important variables</span>
@@ -11802,14 +11802,18 @@ div#notebook {
 <span class="n">CNT_length_stddev</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#standard deviation of CNT length from normal</span>
 <span class="n">CNT_num_tubes</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1">#number of tubes in film</span>
 
-<span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">#creating the pseudo tubes that will act as the edges in the network</span>
+<span class="n">CNT_init</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">=</span> <span class="p">[[</span><span class="n">network_size</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">network_size</span><span class="p">],</span>
+                   <span class="p">[</span><span class="n">network_size</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">network_size</span><span class="p">,</span><span class="n">network_size</span><span class="p">]]</span>
 
 <span class="c1">#Generating tube information</span>
 <span class="c1">#randomly assigning tube lengths distributed around a set tube length</span>
-<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">)</span>
+<span class="n">CNT_init</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">)</span>
 
 <span class="c1">#randomly assign starting point and orientation</span>
-<span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">CNT_num_tubes</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">CNT_init</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">CNT_num_tubes</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
 <span class="c1">#applying scaling to random numbers so they match the needed values</span>
 <span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -11825,7 +11829,7 @@ div#notebook {
 <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
 
 <span class="c1">#delete this in final code this is just a reference to know what is in each column</span>
-<span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Length&#39;</span><span class="p">,</span><span class="s1">&#39;x-value&#39;</span><span class="p">,</span><span class="s1">&#39;y-value&#39;</span><span class="p">,</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span><span class="s1">&#39;y-intercept&#39;</span><span class="p">,</span><span class="s1">&#39;x-high&#39;</span><span class="p">]</span>
+<span class="c1">#header = [&#39;Length&#39;,&#39;x-start&#39;,&#39;y-start&#39;,&#39;slope&#39;,&#39;y-intercept&#39;,&#39;x-high&#39;]</span>
 </pre></div>
 
 </div>
@@ -11835,7 +11839,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#generating a boolean array of the tubes that intersect</span>
@@ -11844,6 +11848,10 @@ div#notebook {
     <span class="n">m1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">b1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
+        <span class="c1">#checking for parallel tubes</span>
+        <span class="k">if</span> <span class="n">m1</span> <span class="o">==</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">]:</span>
+            <span class="n">CNT_intersect</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">continue</span>
         <span class="n">x_intersect</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="ow">and</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
             <span class="n">CNT_intersect</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
@@ -11866,7 +11874,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING</span>
@@ -11877,7 +11885,7 @@ div#notebook {
     <span class="n">m1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">b1</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="ow">or</span> <span class="n">m1</span> <span class="o">==</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">]:</span>
             <span class="k">continue</span>
         <span class="n">x_intersect</span> <span class="o">=</span> <span class="p">(</span><span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="ow">and</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_intersect</span> <span class="o">&lt;=</span> <span class="n">CNT_init</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
@@ -11902,11 +11910,12 @@ div#notebook {
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>The number of intersections in the network is 60.
+<pre>The number of intersections in the network is 94.
 Below is a list where each element represents how many intersections the respective tube has:
-[0 0 9 0 0 0 0 4 0 7 0 0 0 2 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4 0 0 0 0 4 0 0
- 0 0 6 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 1 3 0 0 0 2 3 2 1 0 1 0 1 0 0 0 0 0 0
- 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0]
+[ 3  2  0 12  0  8  0 11  0  0  0 11  0  0  0  0  0  0  0  0  0  0  0  0  0
+  6  0  0  0  9  6  0  0  0  0  0  0  0  0  0  6  0  0  0  0  0  0  2  0  0
+  0  5  0  0  0  0  0  0  5  0  0  0  0  0  0  0  4  0  0  0  0  0  0  1  0
+  1  2  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
 </pre>
 </div>
 </div>
@@ -11918,63 +11927,64 @@ Below is a list where each element represents how many intersections the respect
 
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAP8AAAD8CAYAAAC4nHJkAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
-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
+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
-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
-/wGEcdscRskMigAAAABJRU5ErkJggg==
+yvBLjTL8UqMMv9Qowy81yvBLjTL8UqMMv9Qowy81yvBLjTL8UqMMv9Qowy81KlU1v40lbwLvAP8+
+t41O7xdZnHoXqVZYrHoXpdZfrqpfmmTFuYYfIMmRqtox141OYZHqXaRaYbHqXaRaJ+Vhv9Qowy81
+ai3Cv28NtjmNRap3kWqFxap3kWqdyNz7/JKGwcN+qVFzC3+Sjyd5PsmLSfbOa7uTSnJFku8leTbJ
+M0nu6eZvSfJ4kmPd4+a1rvWMJBuSPJnksW56yLVemuThJM8lOZrkhqHWm+Sz3d/A00m+keTCodY6
+jbmEP8kG4K+B3wWuAT6Z5Jp5bPscvAd8rqquAa4HPtXVuBc4VFVXA4e66aG4Bzg6Nj3kWv8K+Puq
++lXg1xnVPbh6k1wOfBrYUVUfAjYAdzLAWqdWVb3/ADcAB8em7wXunce2p6j5UeAW4HlgWzdvG/D8
+WtfW1bKd0R/hx4DHunlDrfUDwEt055jG5g+uXuBy4FVgC7AReAz47SHWOu3PvA77z+zQM4538wYp
+yZXAtcBhYGtVnegWnQS2rlFZS30F+Dzws7F5Q631KuBN4GtdN+X+JBcxwHqr6jXgS8ArwAngJ1X1
+HQZY67Q84bdEkouBbwGfqaq3x5fV6G1/zT8eSXIbcKqq/vls6wyl1s5G4CPAV6vqWkZDvP/fYfNQ
+6u368rsYvWFdBlyU5K7xdYZS67TmFf7XgCvGprd38wYlyXmMgv9gVT3SzX4jybZu+Tbg1FrVN+ZG
+4BNJ/g34JvCxJF9nmLXC6EjveFUd7qYfZvRmMMR6bwZeqqo3q+o08AjwUYZZ61TmFf4ngKuTXJXk
+fEYnUA7MadsTSRLgAeBoVX15bNEBYHf3+25G5wLWVFXdW1Xbq+pKRvvyu1V1FwOsFaCqTgKvJvlg
+N2sn8CzDrPcV4Pokm7q/iZ2MTk4OsdbpzPFEyq3AC8C/An++1ic7lqnvNxkdyv0QeKr7uRX4BUYn
+1o4B/wBsWetal9R9E/93wm+wtQIfBo50+/fvgM1DrRf4C+A54Gngb4ELhlrrND+O8JMa5Qk/qVGG
+X2qU4ZcaZfilRhl+qVGGX2qU4ZcaZfilRv0v1bcSqzsfp/0AAAAASUVORK5CYII=
 "
 >
 </div>
@@ -11987,7 +11997,7 @@ OJFyN/BT4GfA36z3ZMcy9f0hvUO5fwMOdx93A79Db2LtOPAvwNb1rvW8uu/g/yf8prZW4CZgsfv5
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#gives the indicies along the x-axis of the true values as the </span>
@@ -12015,13 +12025,15 @@ OJFyN/BT4GfA36z3ZMcy9f0hvUO5fwMOdx93A79Db2LtOPAvwNb1rvW8uu/g/yf8prZW4CZgsfv5
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[ 2  2  2  2  2  2  2  2  2  7  7  7  7  9  9  9  9  9  9  9 13 13 14 14 14
- 14 29 29 29 29 34 34 34 34 39 39 39 39 39 39 46 46 46 55 56 56 56 60 60 61
- 61 61 62 62 63 65 67 80 80 97]
-[ 7 14 39 55 56 60 61 65 67 39 55 56 65 14 34 39 62 65 67 97 29 88 34 39 46
- 65 41 46 63 88 39 65 67 97 46 55 60 61 65 67 56 63 65 65 60 63 65 65 67 65
- 67 97 65 97 65 67 97 97 98 98]
-[(2, 7, {&#39;resistance&#39;: 10.0}), (2, 14, {&#39;resistance&#39;: 10.0}), (2, 39, {&#39;resistance&#39;: 10.0}), (2, 55, {&#39;resistance&#39;: 10.0}), (2, 56, {&#39;resistance&#39;: 10.0}), (2, 60, {&#39;resistance&#39;: 10.0}), (2, 61, {&#39;resistance&#39;: 10.0}), (2, 65, {&#39;resistance&#39;: 10.0}), (2, 67, {&#39;resistance&#39;: 10.0}), (7, 39, {&#39;resistance&#39;: 10.0}), (7, 55, {&#39;resistance&#39;: 10.0}), (7, 56, {&#39;resistance&#39;: 10.0}), (7, 65, {&#39;resistance&#39;: 10.0}), (9, 14, {&#39;resistance&#39;: 10.0}), (9, 34, {&#39;resistance&#39;: 10.0}), (9, 39, {&#39;resistance&#39;: 10.0}), (9, 62, {&#39;resistance&#39;: 10.0}), (9, 65, {&#39;resistance&#39;: 10.0}), (9, 67, {&#39;resistance&#39;: 10.0}), (9, 97, {&#39;resistance&#39;: 10.0}), (13, 29, {&#39;resistance&#39;: 10.0}), (13, 88, {&#39;resistance&#39;: 10.0}), (14, 34, {&#39;resistance&#39;: 10.0}), (14, 39, {&#39;resistance&#39;: 10.0}), (14, 46, {&#39;resistance&#39;: 10.0}), (14, 65, {&#39;resistance&#39;: 10.0}), (29, 41, {&#39;resistance&#39;: 10.0}), (29, 46, {&#39;resistance&#39;: 10.0}), (29, 63, {&#39;resistance&#39;: 10.0}), (29, 88, {&#39;resistance&#39;: 10.0}), (34, 39, {&#39;resistance&#39;: 10.0}), (34, 65, {&#39;resistance&#39;: 10.0}), (34, 67, {&#39;resistance&#39;: 10.0}), (34, 97, {&#39;resistance&#39;: 10.0}), (39, 46, {&#39;resistance&#39;: 10.0}), (39, 55, {&#39;resistance&#39;: 10.0}), (39, 60, {&#39;resistance&#39;: 10.0}), (39, 61, {&#39;resistance&#39;: 10.0}), (39, 65, {&#39;resistance&#39;: 10.0}), (39, 67, {&#39;resistance&#39;: 10.0}), (46, 56, {&#39;resistance&#39;: 10.0}), (46, 63, {&#39;resistance&#39;: 10.0}), (46, 65, {&#39;resistance&#39;: 10.0}), (55, 65, {&#39;resistance&#39;: 10.0}), (56, 60, {&#39;resistance&#39;: 10.0}), (56, 63, {&#39;resistance&#39;: 10.0}), (56, 65, {&#39;resistance&#39;: 10.0}), (60, 65, {&#39;resistance&#39;: 10.0}), (60, 67, {&#39;resistance&#39;: 10.0}), (61, 65, {&#39;resistance&#39;: 10.0}), (61, 67, {&#39;resistance&#39;: 10.0}), (61, 97, {&#39;resistance&#39;: 10.0}), (62, 65, {&#39;resistance&#39;: 10.0}), (62, 97, {&#39;resistance&#39;: 10.0}), (63, 65, {&#39;resistance&#39;: 10.0}), (65, 67, {&#39;resistance&#39;: 10.0}), (67, 97, {&#39;resistance&#39;: 10.0}), (80, 97, {&#39;resistance&#39;: 10.0}), (80, 98, {&#39;resistance&#39;: 10.0}), (97, 98, {&#39;resistance&#39;: 10.0})]
+<pre>[ 0  0  0  1  1  3  3  3  3  3  3  3  3  3  3  3  3  5  5  5  5  5  5  5  5
+  7  7  7  7  7  7  7  7  7  7  7 11 11 11 11 11 11 11 11 11 11 11 25 25 25
+ 25 25 25 29 29 29 29 29 29 29 29 29 30 30 30 30 30 30 40 40 40 40 40 40 47
+ 47 51 51 51 51 51 58 58 58 58 58 66 66 66 66 73 75 76 76]
+[40 73 93 16 39  7 11 29 30 40 58 66 73 75 76 92 93  7 40 51 66 73 75 87 93
+ 11 25 29 40 51 66 72 73 75 76 93 25 29 30 47 49 66 72 76 92 93 98 40 58 73
+ 75 76 93 30 40 58 66 73 75 76 92 93 47 58 66 68 92 93 51 66 73 75 76 93 58
+ 93 58 73 75 93 98 66 76 92 93 98 72 73 75 76 93 93 92 93]
+[(0, 40, {&#39;resistance&#39;: 10.0}), (0, 73, {&#39;resistance&#39;: 10.0}), (0, 93, {&#39;resistance&#39;: 10.0}), (1, 16, {&#39;resistance&#39;: 10.0}), (1, 39, {&#39;resistance&#39;: 10.0}), (3, 7, {&#39;resistance&#39;: 10.0}), (3, 11, {&#39;resistance&#39;: 10.0}), (3, 29, {&#39;resistance&#39;: 10.0}), (3, 30, {&#39;resistance&#39;: 10.0}), (3, 40, {&#39;resistance&#39;: 10.0}), (3, 58, {&#39;resistance&#39;: 10.0}), (3, 66, {&#39;resistance&#39;: 10.0}), (3, 73, {&#39;resistance&#39;: 10.0}), (3, 75, {&#39;resistance&#39;: 10.0}), (3, 76, {&#39;resistance&#39;: 10.0}), (3, 92, {&#39;resistance&#39;: 10.0}), (3, 93, {&#39;resistance&#39;: 10.0}), (5, 7, {&#39;resistance&#39;: 10.0}), (5, 40, {&#39;resistance&#39;: 10.0}), (5, 51, {&#39;resistance&#39;: 10.0}), (5, 66, {&#39;resistance&#39;: 10.0}), (5, 73, {&#39;resistance&#39;: 10.0}), (5, 75, {&#39;resistance&#39;: 10.0}), (5, 87, {&#39;resistance&#39;: 10.0}), (5, 93, {&#39;resistance&#39;: 10.0}), (7, 11, {&#39;resistance&#39;: 10.0}), (7, 25, {&#39;resistance&#39;: 10.0}), (7, 29, {&#39;resistance&#39;: 10.0}), (7, 40, {&#39;resistance&#39;: 10.0}), (7, 51, {&#39;resistance&#39;: 10.0}), (7, 66, {&#39;resistance&#39;: 10.0}), (7, 72, {&#39;resistance&#39;: 10.0}), (7, 73, {&#39;resistance&#39;: 10.0}), (7, 75, {&#39;resistance&#39;: 10.0}), (7, 76, {&#39;resistance&#39;: 10.0}), (7, 93, {&#39;resistance&#39;: 10.0}), (11, 25, {&#39;resistance&#39;: 10.0}), (11, 29, {&#39;resistance&#39;: 10.0}), (11, 30, {&#39;resistance&#39;: 10.0}), (11, 47, {&#39;resistance&#39;: 10.0}), (11, 49, {&#39;resistance&#39;: 10.0}), (11, 66, {&#39;resistance&#39;: 10.0}), (11, 72, {&#39;resistance&#39;: 10.0}), (11, 76, {&#39;resistance&#39;: 10.0}), (11, 92, {&#39;resistance&#39;: 10.0}), (11, 93, {&#39;resistance&#39;: 10.0}), (11, 98, {&#39;resistance&#39;: 10.0}), (25, 40, {&#39;resistance&#39;: 10.0}), (25, 58, {&#39;resistance&#39;: 10.0}), (25, 73, {&#39;resistance&#39;: 10.0}), (25, 75, {&#39;resistance&#39;: 10.0}), (25, 76, {&#39;resistance&#39;: 10.0}), (25, 93, {&#39;resistance&#39;: 10.0}), (29, 30, {&#39;resistance&#39;: 10.0}), (29, 40, {&#39;resistance&#39;: 10.0}), (29, 58, {&#39;resistance&#39;: 10.0}), (29, 66, {&#39;resistance&#39;: 10.0}), (29, 73, {&#39;resistance&#39;: 10.0}), (29, 75, {&#39;resistance&#39;: 10.0}), (29, 76, {&#39;resistance&#39;: 10.0}), (29, 92, {&#39;resistance&#39;: 10.0}), (29, 93, {&#39;resistance&#39;: 10.0}), (30, 47, {&#39;resistance&#39;: 10.0}), (30, 58, {&#39;resistance&#39;: 10.0}), (30, 66, {&#39;resistance&#39;: 10.0}), (30, 68, {&#39;resistance&#39;: 10.0}), (30, 92, {&#39;resistance&#39;: 10.0}), (30, 93, {&#39;resistance&#39;: 10.0}), (40, 51, {&#39;resistance&#39;: 10.0}), (40, 66, {&#39;resistance&#39;: 10.0}), (40, 73, {&#39;resistance&#39;: 10.0}), (40, 75, {&#39;resistance&#39;: 10.0}), (40, 76, {&#39;resistance&#39;: 10.0}), (40, 93, {&#39;resistance&#39;: 10.0}), (47, 58, {&#39;resistance&#39;: 10.0}), (47, 93, {&#39;resistance&#39;: 10.0}), (51, 58, {&#39;resistance&#39;: 10.0}), (51, 73, {&#39;resistance&#39;: 10.0}), (51, 75, {&#39;resistance&#39;: 10.0}), (51, 93, {&#39;resistance&#39;: 10.0}), (51, 98, {&#39;resistance&#39;: 10.0}), (58, 66, {&#39;resistance&#39;: 10.0}), (58, 76, {&#39;resistance&#39;: 10.0}), (58, 92, {&#39;resistance&#39;: 10.0}), (58, 93, {&#39;resistance&#39;: 10.0}), (58, 98, {&#39;resistance&#39;: 10.0}), (66, 72, {&#39;resistance&#39;: 10.0}), (66, 73, {&#39;resistance&#39;: 10.0}), (66, 75, {&#39;resistance&#39;: 10.0}), (66, 76, {&#39;resistance&#39;: 10.0}), (73, 93, {&#39;resistance&#39;: 10.0}), (75, 93, {&#39;resistance&#39;: 10.0}), (76, 92, {&#39;resistance&#39;: 10.0}), (76, 93, {&#39;resistance&#39;: 10.0})]
 </pre>
 </div>
 </div>

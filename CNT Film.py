@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 from matplotlib import pyplot as plt
 from matplotlib import pylab #displays arrays as images for easy error checking
@@ -11,7 +11,7 @@ import networkx as nx
 get_ipython().magic('matplotlib inline')
 
 
-# In[2]:
+# In[24]:
 
 #Important variables
 network_size = 1000 #side length of network boundaries
@@ -19,14 +19,18 @@ CNT_length_normal = 1000 #normal length of CNT at center of distribution
 CNT_length_stddev = 2 #standard deviation of CNT length from normal
 CNT_num_tubes = 100 #number of tubes in film
 
-CNT_init = np.zeros((CNT_num_tubes,6))
+CNT_init = np.zeros((CNT_num_tubes+2,6))
+
+#creating the pseudo tubes that will act as the edges in the network
+CNT_init[0:2,:] = [[network_size,0,0,0,0,network_size],
+                   [network_size,0,1,0,network_size,network_size]]
 
 #Generating tube information
 #randomly assigning tube lengths distributed around a set tube length
-CNT_init[:,0] = np.random.normal(CNT_length_normal, CNT_length_stddev, CNT_num_tubes)
+CNT_init[2:,0] = np.random.normal(CNT_length_normal, CNT_length_stddev, CNT_num_tubes)
 
 #randomly assign starting point and orientation
-CNT_init[:,1:4] = np.random.rand(CNT_num_tubes, 3)
+CNT_init[2:,1:4] = np.random.rand(CNT_num_tubes, 3)
 
 #applying scaling to random numbers so they match the needed values
 scaling_factor = np.array([1, network_size, network_size, 2*np.pi, 1, 1])
@@ -42,10 +46,10 @@ CNT_init[:,3] = np.tan(CNT_init[:,3])
 CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 
 #delete this in final code this is just a reference to know what is in each column
-header = ['Length','x-value','y-value','slope','y-intercept','x-high']
+#header = ['Length','x-start','y-start','slope','y-intercept','x-high']
 
 
-# In[11]:
+# In[25]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -53,6 +57,10 @@ for i in range(0,CNT_num_tubes):
     m1 = CNT_init[i,3]
     b1 = CNT_init[i,4]
     for j in range(i+1,CNT_num_tubes):
+        #checking for parallel tubes
+        if m1 == CNT_init[j,3]:
+            CNT_intersect[i,j] = False
+            continue
         x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
         if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
             CNT_intersect[i,j] = True
@@ -60,7 +68,7 @@ for i in range(0,CNT_num_tubes):
 
 # Printing this boolean array will be a lot of information, especially as the number of tubes in the network grows. Since it is a boolean array and there are only two possible values, it will be easier to visualize and understand how many intersections there are by turning the array into an image where True is one color and False is another.
 
-# In[12]:
+# In[26]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 #this cell visually shows the true values as yellow pixels
@@ -70,7 +78,7 @@ for i in range(0,CNT_num_tubes):
     m1 = CNT_init[i,3]
     b1 = CNT_init[i,4]
     for j in range(0,CNT_num_tubes):
-        if i == j:
+        if i == j or m1 == CNT_init[j,3]:
             continue
         x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
         if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
@@ -83,7 +91,7 @@ print('Below is a list where each element represents how many intersections the 
 print(CNT_perTubeIntersect)
 
 
-# In[5]:
+# In[27]:
 
 #gives the indicies along the x-axis of the true values as the 
 #first array and the y-values as the second array

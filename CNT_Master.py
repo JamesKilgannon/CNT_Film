@@ -20,14 +20,18 @@ CNT_length_normal = 1000 #normal length of CNT at center of distribution
 CNT_length_stddev = 2 #standard deviation of CNT length from normal
 CNT_num_tubes = 100 #number of tubes in film
 
-CNT_init = np.zeros((CNT_num_tubes,6))
+CNT_init = np.zeros((CNT_num_tubes+2,6))
+
+#creating the pseudo tubes that will act as the edges in the network
+CNT_init[0:2,:] = [[network_size,0,0,0,0,network_size],
+                   [network_size,0,1,0,network_size,network_size]]
 
 #Generating tube information
 #randomly assigning tube lengths distributed around a set tube length
-CNT_init[:,0] = np.random.normal(CNT_length_normal, CNT_length_stddev, CNT_num_tubes)
+CNT_init[2:,0] = np.random.normal(CNT_length_normal, CNT_length_stddev, CNT_num_tubes)
 
 #randomly assign starting point and orientation
-CNT_init[:,1:4] = np.random.rand(CNT_num_tubes, 3)
+CNT_init[2:,1:4] = np.random.rand(CNT_num_tubes, 3)
 
 #applying scaling to random numbers so they match the needed values
 scaling_factor = np.array([1, network_size, network_size, 2*np.pi, 1, 1])
@@ -51,6 +55,10 @@ for i in range(0,CNT_num_tubes):
     m1 = CNT_init[i,3]
     b1 = CNT_init[i,4]
     for j in range(i+1,CNT_num_tubes):
+        #checking for parallel tubes
+        if m1 == CNT_init[j,3]:
+            CNT_intersect[i,j] = False
+            continue
         x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
         if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
             CNT_intersect[i,j] = True
@@ -70,6 +78,9 @@ for k in range(0,np.sum(CNT_intersect)):
 
 # In[5]:
 
+graph = nx.graph()
+graph.add_edges_from(edges)
+
 #generating a boolean array of the tubes that intersect and creating the G-matrix from that data.
 #The G-matrix has the resistances of all resistors (contact points) and what they are connected
 #to with the sum of the resistances of all intersections of the tube down the diaganol.
@@ -88,9 +99,7 @@ for i in range(0,CNT_num_tubes):
 G_matrix = G_matrix * 2
 for k in range(0,CNT_num_tubes):
     G_matrix[k,k] = np.sum(G_matrix[k,:])
-
-
-# In[6]:
+# In[ ]:
 
 # Functions for equivalent resistance calculation
 
