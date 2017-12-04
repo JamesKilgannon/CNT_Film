@@ -11,7 +11,7 @@ import networkx as nx
 get_ipython().magic('matplotlib inline')
 
 
-# In[24]:
+# In[23]:
 
 #Important variables
 network_size = 1000 #side length of network boundaries
@@ -49,7 +49,20 @@ CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 #header = ['Length','x-start','y-start','slope','y-intercept','x-high']
 
 
-# In[25]:
+# In[26]:
+
+#WORK ON FIXING SECOND Y-VALUES, THEY ARE ALL POSITIVE AND BETWEEN 0 AND 1000
+#generating the endpoints for the tubes in the network
+CNT_endpoints = np.zeros((CNT_num_tubes,4))
+CNT_endpoints[:,0:2] = CNT_init[2:,1:3]
+CNT_endpoints[:,2] = CNT_init[2:,5]
+#figuring out the second y-value by multiplying the length of the line segment by the slope
+#and adding the result to the first y-value
+CNT_endpoints[:,3] = CNT_init[2:,2] + CNT_init[2:,3]/np.sqrt(1 + CNT_init[2:,3]**2)
+CNT_endpoints[:,2:]
+
+
+# In[7]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -68,7 +81,7 @@ for i in range(0,CNT_num_tubes):
 
 # Printing this boolean array will be a lot of information, especially as the number of tubes in the network grows. Since it is a boolean array and there are only two possible values, it will be easier to visualize and understand how many intersections there are by turning the array into an image where True is one color and False is another.
 
-# In[26]:
+# In[8]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 #this cell visually shows the true values as yellow pixels
