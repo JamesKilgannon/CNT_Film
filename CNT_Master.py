@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 from matplotlib import pyplot as plt
 from matplotlib import pylab #displays arrays as images for easy error checking
@@ -12,7 +12,7 @@ import networkx as nx
 get_ipython().magic('matplotlib inline')
 
 
-# In[3]:
+# In[2]:
 
 #Important variables
 network_size = 1000 #side length of network boundaries
@@ -47,7 +47,7 @@ CNT_init[:,3] = np.tan(CNT_init[:,3])
 CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 
 
-# In[4]:
+# In[3]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -64,13 +64,13 @@ for i in range(0,CNT_num_tubes):
             CNT_intersect[i,j] = True
 
 
-# In[5]:
+# In[4]:
 
 #DELETE THIS CELL IN FINAL CODE THIS CELL IS FOR DEBUGGING
 pylab.imshow(CNT_intersect)
 
 
-# In[6]:
+# In[5]:
 
 #gives the indicies along the x-axis of the true values as the 
 #first array and the y-values as the second array
@@ -82,7 +82,7 @@ for k in range(0,np.sum(CNT_intersect)):
     edges[k] = (CNT_tube_num1[k], CNT_tube_num2[k], {'resistance': 10.})
 
 
-# In[19]:
+# In[6]:
 
 graph = nx.Graph()
 graph.add_edges_from(edges)
@@ -105,7 +105,7 @@ for i in range(0,CNT_num_tubes):
 G_matrix = G_matrix * 2
 for k in range(0,CNT_num_tubes):
     G_matrix[k,k] = np.sum(G_matrix[k,:])
-# In[20]:
+# In[7]:
 
 # Functions for equivalent resistance calculation
 
@@ -135,15 +135,18 @@ def equivalent_resistance(graph, check_nodes):
     G = G_matrix(graph)
     
     # Get the matrix of currents, I
-    I = np.zeros(CNT_num_tubes)
+    #I = np.zeros(CNT_num_tubes) - problem with this: we don't want to include tubes with no intersections
+    #I = np.zeros(graph.number_of_edges()) - alsp problem but I don't know why
+    I = np.zeros(len(G))
+    print("Graph has {} edges".format(len(G)))
     I[check_nodes[0]] = 1.
     I[check_nodes[1]] = -1.
   
     #####################################
     ## Remove after debugging finishes ##
     #####################################
-    print(G)                      #######
-    print(I)                      #######
+    ##print(G)                      #######
+    ##print(I)                      #######
     #####################################
     ## Remove after debugging finishes ##
     #####################################
@@ -155,7 +158,7 @@ def equivalent_resistance(graph, check_nodes):
         #####################################
         ## Remove after debugging finishes ##
         #####################################
-        print(V)                           ##
+        ##print(V)                           
         #####################################
         ## Remove after debugging finishes ##
         #####################################
@@ -169,9 +172,30 @@ def equivalent_resistance(graph, check_nodes):
         raise
 
 
-# In[21]:
+# In[8]:
 
-equivalent_resistance(graph,[0,1])
+print(nx.has_path(graph, 0, 1))
+print(np.shape(G_matrix(graph)))
 
 
-# 
+# In[9]:
+
+
+if nx.has_path(graph, 0, 1):
+    try:
+        print(equivalent_resistance(graph,[0,1]))
+    except:
+        pass
+else:
+    print("Could not compute equivalent resistance; there is no contiguous path through the network.")
+
+
+# In[10]:
+
+# Right now the challenge is this: it seems that most of the time, this fails due to the G-matrix being singular.
+
+
+# In[ ]:
+
+
+
