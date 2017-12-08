@@ -8,6 +8,8 @@ from matplotlib import pylab #displays arrays as images for easy error checking
 import numpy as np
 import scipy as sp
 import networkx as nx
+from PIL import Image
+from PIL import ImageDraw
 
 get_ipython().magic('matplotlib inline')
 
@@ -79,7 +81,7 @@ def equivalent_resistance(graph, check_nodes):
         raise
 
 
-# In[3]:
+# In[1]:
 
 #Important variables
 network_size = 10 #side length of network boundaries
@@ -96,29 +98,32 @@ def model(network_size,
     and information about the tubes' size distribution.
 
     """
-    CNT_init = np.zeros((CNT_num_tubes+2,6))
+    CNT_init = np.zeros((CNT_num_tubes+2,7))
 
     #creating the pseudo tubes that will act as the edges in the network
-    CNT_init[0:2,:] = [[network_size,0,0,0,0,network_size],
-                       [network_size,0,1,0,network_size,network_size]]
-
+    CNT_init[0:2,:] = [[network_size,0,0,0,0,network_size,0],
+                       [network_size,0,1,0,network_size,network_size,network_size]]
+    
     #Generating tube information
     #randomly assigning tube lengths distributed around a set tube length
     CNT_init[2:,0] = np.random.normal(CNT_length_normal, CNT_length_stddev, CNT_num_tubes)
-
+    
     #randomly assign starting point and orientation
     CNT_init[2:,1:4] = np.random.rand(CNT_num_tubes, 3)
-
+    
     #applying scaling to random numbers so they match the needed values
-    scaling_factor = np.array([1, network_size, network_size, 2*np.pi, 1, 1])
+    scaling_factor = np.array([1, network_size, network_size, 2*np.pi, 1, 1, 1])
     CNT_init = CNT_init * scaling_factor
-
-    #calculating the x-range for the tubes
-    CNT_init[:,5] = np.cos(CNT_init[:,3]) * CNT_init[:,0]
-
+    
+    #calculating the x-max for the tubes
+    CNT_init[:,5] = CNT_init[:,1] + np.cos(CNT_init[:,3]) * CNT_init[:,0]
+    
+    #calculating the y-max for the tubes
+    CNT_init[:,6] = CNT_init[:,2] + np.sin(CNT_init[:,3]) * CNT_init[:,0]
+    
     #calculating slope
     CNT_init[:,3] = np.tan(CNT_init[:,3])
-
+    
     #calculating the y-intercept of the lines
     CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
     
@@ -194,7 +199,24 @@ for i in range(10):
 
 # In[ ]:
 
+#This cell will create and save the generated network as "CNT_network.png" when run
+#size of image
+image_size = (network_size, network_size) #pixles
+#initializing a blank image
+image = Image.new('RGBA', image_size, (255,255,255,255))
+#selecting the image in which to draw and creating the drawing interface
+draw = ImageDraw.Draw(image)
+#setting the color for each line as black
+color  = (0, 0, 0, 255) 
 
+#drawing the individual line segment on the image
+for tube in CNT_endpoints:
+    draw.line(((tube[0],tube[1]),(tube[2],tube[3])), fill=color, width=1)
+
+#dislplaying the image
+plt.imshow(np.asarray(im), origin='lower')
+plt.show()
+image.save('CNT_network.png')
 
 
 # In[ ]:

@@ -11783,6 +11783,8 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">ImageDraw</span>
 
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
@@ -11869,7 +11871,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Important variables</span>
@@ -11887,29 +11889,32 @@ div#notebook {
 <span class="sd">    and information about the tubes&#39; size distribution.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+    <span class="n">CNT_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
 
     <span class="c1">#creating the pseudo tubes that will act as the edges in the network</span>
-    <span class="n">CNT_init</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">=</span> <span class="p">[[</span><span class="n">network_size</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">network_size</span><span class="p">],</span>
-                       <span class="p">[</span><span class="n">network_size</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">network_size</span><span class="p">,</span><span class="n">network_size</span><span class="p">]]</span>
-
+    <span class="n">CNT_init</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">=</span> <span class="p">[[</span><span class="n">network_size</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">network_size</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                       <span class="p">[</span><span class="n">network_size</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">network_size</span><span class="p">,</span><span class="n">network_size</span><span class="p">,</span><span class="n">network_size</span><span class="p">]]</span>
+    
     <span class="c1">#Generating tube information</span>
     <span class="c1">#randomly assigning tube lengths distributed around a set tube length</span>
     <span class="n">CNT_init</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">CNT_length_normal</span><span class="p">,</span> <span class="n">CNT_length_stddev</span><span class="p">,</span> <span class="n">CNT_num_tubes</span><span class="p">)</span>
-
+    
     <span class="c1">#randomly assign starting point and orientation</span>
     <span class="n">CNT_init</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">CNT_num_tubes</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-
+    
     <span class="c1">#applying scaling to random numbers so they match the needed values</span>
-    <span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">CNT_init</span> <span class="o">=</span> <span class="n">CNT_init</span> <span class="o">*</span> <span class="n">scaling_factor</span>
-
-    <span class="c1">#calculating the x-range for the tubes</span>
-    <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
-
+    
+    <span class="c1">#calculating the x-max for the tubes</span>
+    <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="c1">#calculating the y-max for the tubes</span>
+    <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    
     <span class="c1">#calculating slope</span>
     <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span>
-
+    
     <span class="c1">#calculating the y-intercept of the lines</span>
     <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
     
@@ -12191,7 +12196,24 @@ lPFLTRm/1JTxS039L0BdaqKCLOu7AAAAAElFTkSuQmCC
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#This cell will create and save the generated network as &quot;CNT_network.png&quot; when run</span>
+<span class="c1">#size of image</span>
+<span class="n">image_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">network_size</span><span class="p">,</span> <span class="n">network_size</span><span class="p">)</span> <span class="c1">#pixles</span>
+<span class="c1">#initializing a blank image</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;RGBA&#39;</span><span class="p">,</span> <span class="n">image_size</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">))</span>
+<span class="c1">#selecting the image in which to draw and creating the drawing interface</span>
+<span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="c1">#setting the color for each line as black</span>
+<span class="n">color</span>  <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span> 
+
+<span class="c1">#drawing the individual line segment on the image</span>
+<span class="k">for</span> <span class="n">tube</span> <span class="ow">in</span> <span class="n">CNT_endpoints</span><span class="p">:</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(((</span><span class="n">tube</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">tube</span><span class="p">[</span><span class="mi">1</span><span class="p">]),(</span><span class="n">tube</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">tube</span><span class="p">[</span><span class="mi">3</span><span class="p">])),</span> <span class="n">fill</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1">#dislplaying the image</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">im</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;CNT_network.png&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>

@@ -1,17 +1,19 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[20]:
 
 from matplotlib import pyplot as plt
-from matplotlib import pylab #displays arrays as images for easy error checking
+from matplotlib import pylab
 import numpy as np
 import networkx as nx
+from PIL import Image
+from PIL import ImageDraw
 
 get_ipython().magic('matplotlib inline')
 
 
-# In[23]:
+# In[245]:
 
 #Important variables
 network_size = 1000 #side length of network boundaries
@@ -19,11 +21,11 @@ CNT_length_normal = 1000 #normal length of CNT at center of distribution
 CNT_length_stddev = 2 #standard deviation of CNT length from normal
 CNT_num_tubes = 100 #number of tubes in film
 
-CNT_init = np.zeros((CNT_num_tubes+2,6))
+CNT_init = np.zeros((CNT_num_tubes+2,7))
 
 #creating the pseudo tubes that will act as the edges in the network
-CNT_init[0:2,:] = [[network_size,0,0,0,0,network_size],
-                   [network_size,0,1,0,network_size,network_size]]
+CNT_init[0:2,:] = [[network_size,0,0,0,0,network_size,0],
+                   [network_size,0,1,0,network_size,network_size,network_size]]
 
 #Generating tube information
 #randomly assigning tube lengths distributed around a set tube length
@@ -33,11 +35,14 @@ CNT_init[2:,0] = np.random.normal(CNT_length_normal, CNT_length_stddev, CNT_num_
 CNT_init[2:,1:4] = np.random.rand(CNT_num_tubes, 3)
 
 #applying scaling to random numbers so they match the needed values
-scaling_factor = np.array([1, network_size, network_size, 2*np.pi, 1, 1])
+scaling_factor = np.array([1, network_size, network_size, 2*np.pi, 1, 1, 1])
 CNT_init = CNT_init * scaling_factor
 
-#calculating the x-range for the tubes
-CNT_init[:,5] = np.cos(CNT_init[:,3]) * CNT_init[:,0]
+#calculating the x-max for the tubes
+CNT_init[:,5] = CNT_init[:,1] + np.cos(CNT_init[:,3]) * CNT_init[:,0]
+
+#calculating the y-max for the tubes
+CNT_init[:,6] = CNT_init[:,2] + np.sin(CNT_init[:,3]) * CNT_init[:,0]
 
 #calculating slope
 CNT_init[:,3] = np.tan(CNT_init[:,3])
@@ -46,23 +51,73 @@ CNT_init[:,3] = np.tan(CNT_init[:,3])
 CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 
 #delete this in final code this is just a reference to know what is in each column
-#header = ['Length','x-start','y-start','slope','y-intercept','x-high']
+#header = ['Length','x1','y1','slope','y-intercept','x2','y2']
 
 
-# In[26]:
+# In[246]:
 
 #WORK ON FIXING SECOND Y-VALUES, THEY ARE ALL POSITIVE AND BETWEEN 0 AND 1000
 #generating the endpoints for the tubes in the network
 CNT_endpoints = np.zeros((CNT_num_tubes,4))
 CNT_endpoints[:,0:2] = CNT_init[2:,1:3]
-CNT_endpoints[:,2] = CNT_init[2:,5]
-#figuring out the second y-value by multiplying the length of the line segment by the slope
-#and adding the result to the first y-value
-CNT_endpoints[:,3] = CNT_init[2:,2] + CNT_init[2:,3]/np.sqrt(1 + CNT_init[2:,3]**2)
-CNT_endpoints[:,2:]
+CNT_endpoints[:,2:4] = CNT_init[2:,5:7]
 
 
-# In[7]:
+# In[247]:
+
+#size of image
+image_size = (network_size, network_size) #pixles
+#initializing a blank image
+image = Image.new('RGBA', image_size, (255,255,255,255))
+#selecting the image in which to draw and creating the drawing interface
+draw = ImageDraw.Draw(image)
+#setting the color for each line as black
+color  = (0, 0, 0, 255) 
+
+#drawing the individual line segment on the image
+for tube in CNT_endpoints:
+    draw.line(((tube[0],tube[1]),(tube[2],tube[3])), fill=color, width=1)
+
+#dislplaying the image
+plt.imshow(np.asarray(im), origin='lower')
+plt.show()
+image.save('CNT_network_test.png')
+
+
+# In[94]:
+
+#THIS IS THE EXAMPLE WITH NOTES FOR CLARITY
+import random as rnd
+#number of lines
+N = 60000
+#size of image
+s = (500, 500)
+#initializing a blank image
+im = Image.new('RGBA', s, (255,255,255,255))
+#selecting the image in which to draw and creating the drawing interface
+draw = ImageDraw.Draw(im)
+
+#generating random lines
+for i in range(N):
+    #scaling x and y values to be within allowable range
+    x1 = rnd.random() * s[0]
+    y1 = rnd.random() * s[1]
+    x2 = rnd.random() * s[0]
+    y2 = rnd.random() * s[1]
+    
+    #generating a random color for each line
+    alpha = rnd.random()
+    color  = (int(rnd.random() * 256), int(rnd.random() * 256), int(rnd.random() * 256), int(alpha * 256)) 
+    
+    #drawing the individual line segment on the image
+    draw.line(((x1,y1),(x2,y2)), fill=color, width=1)
+
+#dislplaying the image
+plt.imshow(np.asarray(im), origin='lower')
+plt.show()
+
+
+# In[248]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -75,6 +130,10 @@ for i in range(0,CNT_num_tubes):
             CNT_intersect[i,j] = False
             continue
         x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
+        y_intersect = CNT_init[i,3] * x_intersect + CNT_init[i,4] 
+        
+        #FIX THIS SO IT INCLUDES THE Y-RANGE AND MAKE SURE THAT THE RANGES ARE WITHIN THE NETWORK BOUNDS
+        #POSSIBLY USE CNT_ENDPOINTS FOR THIS
         if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
             CNT_intersect[i,j] = True
 
