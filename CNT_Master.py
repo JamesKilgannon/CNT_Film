@@ -146,7 +146,7 @@ def model(network_size,
     ########
     ########
     #(debugging)         
-    pylab.imshow(CNT_intersect)
+   # pylab.imshow(CNT_intersect)
     ########
     
     #gives the indicies along the x-axis of the true values as the 
@@ -158,17 +158,27 @@ def model(network_size,
     graph.add_edges_from((CNT_tube_num1[k], CNT_tube_num2[k],
                           {'resistance': 10.}) for k in range(0, np.sum(CNT_intersect)))
     
+    #get rid of any bits of the graph not contiguous with node 0 (one of the test nodes)
+    #thanks to Pieter Swart from 2006 [https://groups.google.com/forum/#!topic/networkx-discuss/XmP5wZhrDMI]
+    contiguous_nodes = nx.node_connected_component(graph, 0)
+    new_graph = graph.subgraph(contiguous_nodes)
+    
     ########
     ########
     #(debugging)
-    print("Continuous path present: {}".format(nx.has_path(graph, 0, 1)))
-    print("Shape of G matrix: {}".format(np.shape(G_matrix(graph))))
+    nx.draw(new_graph, with_labels=True, font_weight='bold', node_size=100, font_size=9)
+    print("Node 0 has {} neighbors".format(len(list(new_graph.neighbors(0)))))
+    print("---")
+    print("Node 1 has {} neighbors".format(len(list(new_graph.neighbors(1)))))
+    print("---")
+    print("Continuous path present: {}".format(nx.has_path(new_graph, 0, 1)))
+    print("Shape of G matrix: {}".format(np.shape(G_matrix(new_graph))))
     ########
     
     #computes equiv. resistance
-    if nx.has_path(graph, 0, 1):
+    if nx.has_path(new_graph, 0, 1):
         try:
-            eqr = equivalent_resistance(graph,[0,1])
+            eqr = equivalent_resistance(new_graph,[0,1])
         except:
             eqr = np.nan
     else:
@@ -180,16 +190,35 @@ def model(network_size,
 
 # In[4]:
 
-for i in range(10):
-    try:
-        print(model(0.1, 10, 1, 10))
-    except:
-        pass
+# this gives the situation where the equiv. resistance comes to 10.0
+np.random.seed(57)
+print(model(10, 10, 1, 5000))
 
 
 # In[5]:
 
-# Right now the challenge is this: it seems that most of the time, this fails due to the G-matrix being singular.
+
+numsuccesses = 0
+numtens = 0
+for i in range(30):
+    print("--------------------")
+    try:
+        eqr = model(10, 10, 1, 1000)
+        print(eqr)
+        if not eqr == np.nan:
+            numsuccesses += 1
+        if eqr == 10:
+            numtens += 1
+    except:
+        pass
+print("numsuccesses = {}".format(numsuccesses))
+print("numtens = {}".format(numtens))
+
+
+# In[6]:
+
+# Right now the challenge is this: it seems that often, the result is an equivalent resistance of exactly 10,
+# which seems to probably be wrong.
 
 
 # In[ ]:
