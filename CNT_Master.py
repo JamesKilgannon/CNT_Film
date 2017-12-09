@@ -80,9 +80,9 @@ def equivalent_resistance(graph, check_nodes):
         raise
 
 
-# In[12]:
+# In[33]:
 
-def draw_network(network_size, CNT_endpoints):
+def draw_network(network_size, CNT_endpoints, contiguous_nodes):
     """
     Outputs a drawing of the CNT network of given size
     whose endpoints are listed in CNT_endpoints.
@@ -95,30 +95,45 @@ def draw_network(network_size, CNT_endpoints):
     #selecting the image in which to draw and creating the drawing interface
     draw = ImageDraw.Draw(image)
     #setting the color for each line as black
-    color  = (0, 0, 0, 255) 
+    black = (0, 0, 0, 255) 
+    red = (255, 0, 0, 255)
 
     #drawing the individual line segment on the image
     for tube in CNT_endpoints:
-        draw.line(((tube[0],tube[1]),(tube[2],tube[3])), fill=color, width=1)
+        draw.line(((tube[0],tube[1]),(tube[2],tube[3])), fill=black, width=1)
+    
+#    plt.imshow(np.asarray(image), origin='lower')
+    
+#    for row in contiguous_nodes:
+#        draw.line(((CNT_endpoints[row,0],CNT_endpoints[row,1]),(CNT_endpoints[row,2],CNT_endpoints[row,3])),
+#                  fill=red, width=1)
+        
+    for i, tube in enumerate(CNT_endpoints):
+        if i in contiguous_nodes:
+            draw.line(((tube[0],tube[1]),(tube[2],tube[3])), fill=red, width=1)
 
     #dislplaying the image
     plt.imshow(np.asarray(image), origin='lower')
     plt.show()
-    image.save('CNT_network_test.png')
+    image.save('CNT_network.png')
 
 
-# In[21]:
+# In[41]:
 
 #Important variables
 network_size = 10 #side length of network boundaries
-CNT_length_normal = 50 #normal length of CNT at center of distribution
-CNT_length_stddev = 5 #standard deviation of CNT length from normal
+CNT_length_normal = 445 #normal length of CNT at center of distribution
+CNT_length_stddev = 310 #standard deviation of CNT length from normal
 CNT_num_tubes = 1000 #number of tubes in film
+resistance_mean = 10
+resistance_stddev = 1
 
 def model(network_size,
          CNT_length_normal,
          CNT_length_stddev,
-         CNT_num_tubes):
+         CNT_num_tubes,
+         resistance_mean,
+         resistance_stddev):
     """
     Returns the equivalent resistance, given inputs of the size of the CNT film,
     and information about the tubes' size distribution.
@@ -131,7 +146,9 @@ def model(network_size,
     
     #Generating tube information
     #randomly assigning tube lengths distributed around a set tube length
-    CNT_init[2:,0] = np.random.normal(CNT_length_normal, CNT_length_stddev, CNT_num_tubes)
+    logmean = np.log(CNT_length_normal / (np.sqrt(1+(CNT_length_stddev/CNT_length_normal)**2)))
+    logstdev = np.sqrt(np.log(1+(CNT_length_stddev/CNT_length_normal)**2))
+    CNT_init[2:,0] = np.random.lognormal(logmean, logstdev, CNT_num_tubes)
 
     #randomly assign starting point and orientation
     CNT_init[2:,1:4] = np.random.rand(CNT_num_tubes, 3)
@@ -148,30 +165,48 @@ def model(network_size,
 
     #calculating slope
     CNT_init[:,3] = np.tan(CNT_init[:,3])
-
+    
     #calculating the y-intercept of the lines
     CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
+    
+#    #generating a boolean array of the tubes that intersect
+#    CNT_intersect = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
+#    for i in range(0,CNT_num_tubes):
+#        m1 = CNT_init[i,3]
+#        b1 = CNT_init[i,4]
+#        for j in range(i+1,CNT_num_tubes):
+#            #checking for parallel tubes
+#            if m1 == CNT_init[j,3]:
+#                CNT_intersect[i,j] = False
+#                continue
+#            x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
+#            y_intersect = CNT_init[i,3] * x_intersect + CNT_init[i,4] 
+#
+#            #FIX THIS SO IT INCLUDES THE Y-RANGE AND MAKE SURE THAT THE RANGES ARE WITHIN THE NETWORK BOUNDS
+#            #POSSIBLY USE CNT_ENDPOINTS FOR THIS
+#            if (CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and
+#                CNT_init[j,1] <= x_intersect <= CNT_init[j,5] and
+#                0 <= x_intersect <= network_size and 0 <= y_intersect <= network_size):
+#                CNT_intersect[i,j] = True
+    
+    
 
     #generating a boolean array of the tubes that intersect
     CNT_intersect = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
-    
-    i=0
-    for row1 in CNT_init:
+    for i, row1 in enumerate(CNT_init):
         m1 = row1[3]
         b1 = row1[4]
-        j=i+1
-        for row2 in CNT_init[i+1:,:]:
-            #check for parallel
+        for j, row2 in enumerate(CNT_init[i+1:,:]):
             m2 = row2[3]
             b2 = row2[4]
+            #check for parallel
             if m1 == m2:
-                CNT_intersect[i,j] = False
                 continue
             x_intersect = (b2 - b1) / (m1 - m2)
-            if row1[1] <= x_intersect <= row1[5] and row2[1] <= x_intersect <= row2[5]:
-                CNT_intersect[i,j] = True
-            j+=1
-        i+=1
+            y_intersect = m1 * x_intersect + b1
+            if (row1[1] <= x_intersect <= row1[5] and row2[1] <= x_intersect <= row2[5] and
+               0 <= x_intersect <= network_size and 0 <= y_intersect <= network_size):
+                CNT_intersect[i,j+i+1] = True
     
     ########
     ########
@@ -186,7 +221,8 @@ def model(network_size,
     #add the intersections as edges in a networkx graph
     graph = nx.Graph()
     graph.add_edges_from((CNT_tube_num1[k], CNT_tube_num2[k],
-                          {'resistance': 10.}) for k in range(0, np.sum(CNT_intersect)))
+                          {'resistance': np.random.normal(resistance_mean, resistance_stddev)})
+                         for k in range(0, np.sum(CNT_intersect)))
     
     #get rid of any bits of the graph not contiguous with node 0 (one of the test nodes)
     #thanks to Pieter Swart from 2006 [https://groups.google.com/forum/#!topic/networkx-discuss/XmP5wZhrDMI]
@@ -199,8 +235,7 @@ def model(network_size,
     CNT_endpoints[:,0:2] = CNT_init[2:,1:3]
     CNT_endpoints[:,2:4] = CNT_init[2:,5:7]
     #call the drawing function
-    draw_network(network_size, CNT_endpoints)
-    
+    draw_network(network_size, CNT_endpoints, contiguous_nodes)
     
     ########
     ########
@@ -232,14 +267,13 @@ def model(network_size,
 
 
 
-# In[22]:
+# In[46]:
 
-# this gives the situation where the equiv. resistance comes to 10.0
 np.random.seed(53)
-print(model(1000, 300, 1, 1000))
+print(model(5000, CNT_length_normal, CNT_length_stddev, 6000, 10, 1))
 
 
-# In[ ]:
+# In[37]:
 
 
 numsuccesses = 0
@@ -272,12 +306,12 @@ print("numtens = {}".format(numtens))
 
 # In[ ]:
 
+get_ipython().run_cell_magic('timeit', '', 'np.random.lognormal(CNT_length_normal,CNT_length_stddev)')
 
 
+# In[25]:
 
-# In[9]:
-
-
+get_ipython().magic('pinfo np.log')
 
 
 # In[ ]:
