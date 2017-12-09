@@ -80,7 +80,25 @@ def equivalent_resistance(graph, check_nodes):
         raise
 
 
-# In[33]:
+# In[3]:
+
+# credit to Bryce Boe http://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
+
+def ccw(ax, ay, bx, by, cx, cy):
+    """
+    Determines whether points a, b, and c are counerclockwise
+    """
+    return (cy - ay)*(bx - ax) > (by-ay)*(cx-ax)
+
+def intersect(ax, ay, bx, by, cx, cy, dx, dy):
+    """
+    a and b describe one line segment; c and d describe another.
+    """
+    return (ccw(ax, ay, cx, cy, dx, dy) != ccw(bx, by, cx, cy, dx, dy) and
+            ccw(ax, ay, bx, by, cx, cy) != ccw(ax, ay, bx, by, dx, dy))
+
+
+# In[4]:
 
 def draw_network(network_size, CNT_endpoints, contiguous_nodes):
     """
@@ -101,15 +119,9 @@ def draw_network(network_size, CNT_endpoints, contiguous_nodes):
     #drawing the individual line segment on the image
     for tube in CNT_endpoints:
         draw.line(((tube[0],tube[1]),(tube[2],tube[3])), fill=black, width=1)
-    
-#    plt.imshow(np.asarray(image), origin='lower')
-    
-#    for row in contiguous_nodes:
-#        draw.line(((CNT_endpoints[row,0],CNT_endpoints[row,1]),(CNT_endpoints[row,2],CNT_endpoints[row,3])),
-#                  fill=red, width=1)
         
     for i, tube in enumerate(CNT_endpoints):
-        if i in contiguous_nodes:
+        if i+2 in contiguous_nodes: #add 2 to index because CNT_endpoints doesn't contain tubes 0 and 1
             draw.line(((tube[0],tube[1]),(tube[2],tube[3])), fill=red, width=1)
 
     #dislplaying the image
@@ -118,7 +130,7 @@ def draw_network(network_size, CNT_endpoints, contiguous_nodes):
     image.save('CNT_network.png')
 
 
-# In[41]:
+# In[5]:
 
 #Important variables
 network_size = 10 #side length of network boundaries
@@ -191,27 +203,41 @@ def model(network_size,
     
     
 
-    #generating a boolean array of the tubes that intersect
+#    #generating a boolean array of the tubes that intersect
+#    CNT_intersect = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
+#    for i, row1 in enumerate(CNT_init):
+#        m1 = row1[3]
+#        b1 = row1[4]
+#
+#        for j, row2 in enumerate(CNT_init):
+#            m2 = row2[3]
+#            b2 = row2[4]
+#            #check for parallel
+#            if m1 == m2:
+#                continue
+#            x_intersect = (b2 - b1) / (m1 - m2)
+#            y_intersect = m1 * x_intersect + b1
+#            if (row1[1] <= x_intersect <= row1[5] and row2[1] <= x_intersect <= row2[5] and
+#               0 <= x_intersect <= network_size and 0 <= y_intersect <= network_size):
+#
+#                CNT_intersect[i,j] = True
+
+#generating a boolean array of the tubes that intersect
     CNT_intersect = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
-    for i, row1 in enumerate(CNT_init):
-        m1 = row1[3]
-        b1 = row1[4]
-        for j, row2 in enumerate(CNT_init[i+1:,:]):
-            m2 = row2[3]
-            b2 = row2[4]
-            #check for parallel
-            if m1 == m2:
-                continue
-            x_intersect = (b2 - b1) / (m1 - m2)
-            y_intersect = m1 * x_intersect + b1
-            if (row1[1] <= x_intersect <= row1[5] and row2[1] <= x_intersect <= row2[5] and
-               0 <= x_intersect <= network_size and 0 <= y_intersect <= network_size):
+    
+    for i,row1 in enumerate(CNT_init):
+        for j,row2 in enumerate(CNT_init[i+1:,:]):
+            coords = np.concatenate((row1[1:3], row1[5:7], row2[1:3], row2[5:7]))
+            if intersect(*coords):
                 CNT_intersect[i,j+i+1] = True
     
     ########
     ########
     #(debugging)         
-    #pylab.imshow(CNT_intersect)
+    pylab.imshow(CNT_intersect, origin='lower')
+    a = np.arange(0,32)
+    print(a[np.sum(CNT_intersect, axis=0)==0])
+    #print((np.sum(CNT_intersect, axis=0)0)* np.arange(0,32))
     ########
     
     #gives the indicies along the x-axis of the true values as the 
@@ -228,6 +254,7 @@ def model(network_size,
     #thanks to Pieter Swart from 2006 [https://groups.google.com/forum/#!topic/networkx-discuss/XmP5wZhrDMI]
     contiguous_nodes = nx.node_connected_component(graph, 0)
     new_graph = graph.subgraph(contiguous_nodes)
+    print(contiguous_nodes)
     
     #draw the network:
     #generating the endpoints for the tubes in the network
@@ -235,12 +262,12 @@ def model(network_size,
     CNT_endpoints[:,0:2] = CNT_init[2:,1:3]
     CNT_endpoints[:,2:4] = CNT_init[2:,5:7]
     #call the drawing function
-    draw_network(network_size, CNT_endpoints, contiguous_nodes)
+    #draw_network(network_size, CNT_endpoints, contiguous_nodes)
     
     ########
     ########
     #(debugging)
-    nx.draw(new_graph, with_labels=True, font_weight='bold', node_size=100, font_size=9)
+    #nx.draw(new_graph, with_labels=True, font_weight='bold', node_size=100, font_size=9)
     print("Node 0 has {} neighbors".format(len(list(new_graph.neighbors(0)))))
     print("---")
     print("Node 1 has {} neighbors".format(len(list(new_graph.neighbors(1)))))
@@ -267,13 +294,13 @@ def model(network_size,
 
 
 
-# In[46]:
+# In[6]:
 
 np.random.seed(53)
-print(model(5000, CNT_length_normal, CNT_length_stddev, 6000, 10, 1))
+print(model(1000, CNT_length_normal, CNT_length_stddev, 30, 10, 1))
 
 
-# In[37]:
+# In[ ]:
 
 
 numsuccesses = 0
@@ -309,9 +336,9 @@ print("numtens = {}".format(numtens))
 get_ipython().run_cell_magic('timeit', '', 'np.random.lognormal(CNT_length_normal,CNT_length_stddev)')
 
 
-# In[25]:
+# In[ ]:
 
-get_ipython().magic('pinfo np.log')
+get_ipython().magic('pinfo np.random.rand')
 
 
 # In[ ]:
