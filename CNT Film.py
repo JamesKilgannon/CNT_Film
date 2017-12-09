@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[20]:
+# In[1]:
 
 from matplotlib import pyplot as plt
 from matplotlib import pylab
@@ -13,7 +13,7 @@ from PIL import ImageDraw
 get_ipython().magic('matplotlib inline')
 
 
-# In[245]:
+# In[2]:
 
 #Important variables
 network_size = 1000 #side length of network boundaries
@@ -54,7 +54,7 @@ CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 #header = ['Length','x1','y1','slope','y-intercept','x2','y2']
 
 
-# In[246]:
+# In[3]:
 
 #WORK ON FIXING SECOND Y-VALUES, THEY ARE ALL POSITIVE AND BETWEEN 0 AND 1000
 #generating the endpoints for the tubes in the network
@@ -63,7 +63,7 @@ CNT_endpoints[:,0:2] = CNT_init[2:,1:3]
 CNT_endpoints[:,2:4] = CNT_init[2:,5:7]
 
 
-# In[247]:
+# In[5]:
 
 #size of image
 image_size = (network_size, network_size) #pixles
@@ -72,19 +72,19 @@ image = Image.new('RGBA', image_size, (255,255,255,255))
 #selecting the image in which to draw and creating the drawing interface
 draw = ImageDraw.Draw(image)
 #setting the color for each line as black
-color  = (0, 0, 0, 255) 
+color  = (0, 0, 0, 255)
 
 #drawing the individual line segment on the image
 for tube in CNT_endpoints:
     draw.line(((tube[0],tube[1]),(tube[2],tube[3])), fill=color, width=1)
-
+    
 #dislplaying the image
-plt.imshow(np.asarray(im), origin='lower')
+plt.imshow(np.asarray(image), origin='lower')
 plt.show()
 image.save('CNT_network_test.png')
 
 
-# In[94]:
+# In[6]:
 
 #THIS IS THE EXAMPLE WITH NOTES FOR CLARITY
 import random as rnd
@@ -117,7 +117,7 @@ plt.imshow(np.asarray(im), origin='lower')
 plt.show()
 
 
-# In[248]:
+# In[7]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -134,7 +134,7 @@ for i in range(0,CNT_num_tubes):
         
         #FIX THIS SO IT INCLUDES THE Y-RANGE AND MAKE SURE THAT THE RANGES ARE WITHIN THE NETWORK BOUNDS
         #POSSIBLY USE CNT_ENDPOINTS FOR THIS
-        if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
+        if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5] and 0 <= x_intersect <= network_size and 0 <= y_intersect <= network_size:
             CNT_intersect[i,j] = True
 
 
