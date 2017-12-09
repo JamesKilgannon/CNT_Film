@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[3]:
+# In[2]:
 
 from matplotlib import pyplot as plt
 from matplotlib import pylab
@@ -13,7 +13,7 @@ from PIL import ImageDraw
 get_ipython().magic('matplotlib inline')
 
 
-# In[4]:
+# In[3]:
 
 #Setting the seed for consistency for debugging
 np.random.seed(53)
@@ -60,7 +60,7 @@ print(CNT_init[:,2])
 #header = ['Length','x1','y1','slope','y-intercept','x2','y2']
 
 
-# In[5]:
+# In[4]:
 
 #WORK ON FIXING SECOND Y-VALUES, THEY ARE ALL POSITIVE AND BETWEEN 0 AND 1000
 #generating the endpoints for the tubes in the network
@@ -69,7 +69,7 @@ CNT_endpoints[:,0:2] = CNT_init[2:,1:3]
 CNT_endpoints[:,2:4] = CNT_init[2:,5:7]
 
 
-# In[6]:
+# In[5]:
 
 #generating a boolean array of the tubes that intersect
 CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
@@ -91,7 +91,7 @@ for i in range(0,CNT_num_tubes):
             CNT_intersect[i,j] = True
 
 
-# In[7]:
+# In[6]:
 
 #size of image
 image_size = (network_size, network_size) #pixles
@@ -112,42 +112,14 @@ plt.show()
 image.save('CNT_network_test.png')
 
 
-# In[8]:
+# In[7]:
 
-#THIS IS THE EXAMPLE WITH NOTES FOR CLARITY
-import random as rnd
-#number of lines
-N = 60000
-#size of image
-s = (500, 500)
-#initializing a blank image
-im = Image.new('RGBA', s, (255,255,255,255))
-#selecting the image in which to draw and creating the drawing interface
-draw = ImageDraw.Draw(im)
-
-#generating random lines
-for i in range(N):
-    #scaling x and y values to be within allowable range
-    x1 = rnd.random() * s[0]
-    y1 = rnd.random() * s[1]
-    x2 = rnd.random() * s[0]
-    y2 = rnd.random() * s[1]
-    
-    #generating a random color for each line
-    alpha = rnd.random()
-    color  = (int(rnd.random() * 256), int(rnd.random() * 256), int(rnd.random() * 256), int(alpha * 256)) 
-    
-    #drawing the individual line segment on the image
-    draw.line(((x1,y1),(x2,y2)), fill=color, width=1)
-
-#dislplaying the image
-plt.imshow(np.asarray(im), origin='lower')
-plt.show()
+get_ipython().run_cell_magic('timeit', '', "#THIS IS THE EXAMPLE WITH NOTES FOR CLARITY\nimport random as rnd\n#number of lines\nN = 60000\n#size of image\ns = (500, 500)\n#initializing a blank image\nim = Image.new('RGBA', s, (255,255,255,255))\n#selecting the image in which to draw and creating the drawing interface\ndraw = ImageDraw.Draw(im)\n\n#generating random lines\nfor i in range(N):\n    #scaling x and y values to be within allowable range\n    x1 = rnd.random() * s[0]\n    y1 = rnd.random() * s[1]\n    x2 = rnd.random() * s[0]\n    y2 = rnd.random() * s[1]\n    \n    #generating a random color for each line\n    alpha = rnd.random()\n    color  = (int(rnd.random() * 256), int(rnd.random() * 256), int(rnd.random() * 256), int(alpha * 256)) \n    \n    #drawing the individual line segment on the image\n    draw.line(((x1,y1),(x2,y2)), fill=color, width=1)\n\n#dislplaying the image\nplt.imshow(np.asarray(im), origin='lower')\nplt.show()")
 
 
 # Printing this boolean array will be a lot of information, especially as the number of tubes in the network grows. Since it is a boolean array and there are only two possible values, it will be easier to visualize and understand how many intersections there are by turning the array into an image where True is one color and False is another.
 
-# In[9]:
+# In[8]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 #this cell visually shows the true values as yellow pixels
@@ -170,7 +142,7 @@ print('Below is a list where each element represents how many intersections the 
 print(CNT_perTubeIntersect)
 
 
-# In[10]:
+# In[9]:
 
 #gives the indicies along the x-axis of the true values as the 
 #first array and the y-values as the second array
@@ -185,7 +157,7 @@ print(CNT_tube_num2)
 print(edges)
 
 
-# In[11]:
+# In[10]:
 
 #generating a boolean array of the tubes that intersect and creating the G-matrix from that data
 G_matrix = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
@@ -205,7 +177,7 @@ for k in range(0,CNT_num_tubes):
 pylab.imshow(G_matrix, origin='lower')
 
 
-# In[12]:
+# In[11]:
 
 a = np.array([[3,1], [1,2]])
 b = np.array([9,8])
@@ -215,7 +187,7 @@ print(b)
 print(x)
 
 
-# In[13]:
+# In[12]:
 
 # We will use the wonderfully useful library networkx to allow us
 # to represent graphs in a nice way.
@@ -237,7 +209,7 @@ edges = [
 example_graph.add_edges_from(edges)
 
 
-# In[14]:
+# In[13]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 def num_intersect(network_size, CNT_length_normal, CNT_length_stddev, CNT_num_tubes, num_iterations=1000):
