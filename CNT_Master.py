@@ -28,8 +28,7 @@ def G_matrix(graph):
     # The adjacency matrix gives all needed elements but the diagonal
     G = nx.adjacency_matrix(graph, weight='reciprocalR')
     # Add the diagonal
-    G.setdiag(np.squeeze(np.asarray(-nx.incidence_matrix(graph, 
-                                                          weight='reciprocalR').sum(axis=1))))
+    G.setdiag(np.squeeze(np.asarray(-nx.incidence_matrix(graph, weight='reciprocalR').sum(axis=1))))
     # G is a csr_matrix, but we want an array
     return G.toarray()
 
@@ -41,35 +40,13 @@ def equivalent_resistance(graph, check_nodes):
 
     # Get the G matrix
     G = G_matrix(graph)
-    print("G matrix is got!")
-    # Get the matrix of currents, I
-    #I = np.zeros(CNT_num_tubes) - problem with this: we don't want to include tubes with no intersections
-    #I = np.zeros(graph.number_of_edges()) - alsp problem but I don't know why
     I = np.zeros(len(G))
-    print("Length of G matrix: {}".format(len(G)))
     I[check_nodes[0]] = 1.
     I[check_nodes[1]] = -1.
-  
-    #####################################
-    ## Remove after debugging finishes ##
-    #####################################
-    print(G)                      #######
-    print(I)                      #######
-    #####################################
-    ## Remove after debugging finishes ##
-    #####################################
     
     # Solve for the voltage matrix
     try:
         V = np.linalg.solve(G, I)
-        
-        #####################################
-        ## Remove after debugging finishes ##
-        #####################################
-        print(V)                           
-        #####################################
-        ## Remove after debugging finishes ##
-        #####################################
         
         # use a simple numpy operation to compute the equivalent resistance
         equivalent_resistance = abs(sum(I*V))
@@ -180,49 +157,8 @@ def model(network_size,
     
     #calculating the y-intercept of the lines
     CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
-    
-#    #generating a boolean array of the tubes that intersect
-#    CNT_intersect = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
-#    for i in range(0,CNT_num_tubes):
-#        m1 = CNT_init[i,3]
-#        b1 = CNT_init[i,4]
-#        for j in range(i+1,CNT_num_tubes):
-#            #checking for parallel tubes
-#            if m1 == CNT_init[j,3]:
-#                CNT_intersect[i,j] = False
-#                continue
-#            x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
-#            y_intersect = CNT_init[i,3] * x_intersect + CNT_init[i,4] 
-#
-#            #FIX THIS SO IT INCLUDES THE Y-RANGE AND MAKE SURE THAT THE RANGES ARE WITHIN THE NETWORK BOUNDS
-#            #POSSIBLY USE CNT_ENDPOINTS FOR THIS
-#            if (CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and
-#                CNT_init[j,1] <= x_intersect <= CNT_init[j,5] and
-#                0 <= x_intersect <= network_size and 0 <= y_intersect <= network_size):
-#                CNT_intersect[i,j] = True
-    
-    
 
-#    #generating a boolean array of the tubes that intersect
-#    CNT_intersect = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
-#    for i, row1 in enumerate(CNT_init):
-#        m1 = row1[3]
-#        b1 = row1[4]
-#
-#        for j, row2 in enumerate(CNT_init):
-#            m2 = row2[3]
-#            b2 = row2[4]
-#            #check for parallel
-#            if m1 == m2:
-#                continue
-#            x_intersect = (b2 - b1) / (m1 - m2)
-#            y_intersect = m1 * x_intersect + b1
-#            if (row1[1] <= x_intersect <= row1[5] and row2[1] <= x_intersect <= row2[5] and
-#               0 <= x_intersect <= network_size and 0 <= y_intersect <= network_size):
-#
-#                CNT_intersect[i,j] = True
-
-#generating a boolean array of the tubes that intersect
+    #generating a boolean array of the tubes that intersect
     CNT_intersect = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
     
     for i,row1 in enumerate(CNT_init):
@@ -230,15 +166,6 @@ def model(network_size,
             coords = np.concatenate((row1[1:3], row1[5:7], row2[1:3], row2[5:7]))
             if intersect(*coords):
                 CNT_intersect[i,j+i+1] = True
-    
-    ########
-    ########
-    #(debugging)         
-    pylab.imshow(CNT_intersect, origin='lower')
-    a = np.arange(0,32)
-    print(a[np.sum(CNT_intersect, axis=0)==0])
-    #print((np.sum(CNT_intersect, axis=0)0)* np.arange(0,32))
-    ########
     
     #gives the indicies along the x-axis of the true values as the 
     #first array and the y-values as the second array
@@ -254,7 +181,6 @@ def model(network_size,
     #thanks to Pieter Swart from 2006 [https://groups.google.com/forum/#!topic/networkx-discuss/XmP5wZhrDMI]
     contiguous_nodes = nx.node_connected_component(graph, 0)
     new_graph = graph.subgraph(contiguous_nodes)
-    print(contiguous_nodes)
     
     #draw the network:
     #generating the endpoints for the tubes in the network
@@ -262,19 +188,10 @@ def model(network_size,
     CNT_endpoints[:,0:2] = CNT_init[2:,1:3]
     CNT_endpoints[:,2:4] = CNT_init[2:,5:7]
     #call the drawing function
-    #draw_network(network_size, CNT_endpoints, contiguous_nodes)
+    draw_network(network_size, CNT_endpoints, contiguous_nodes)
     
-    ########
-    ########
-    #(debugging)
-    #nx.draw(new_graph, with_labels=True, font_weight='bold', node_size=100, font_size=9)
-    print("Node 0 has {} neighbors".format(len(list(new_graph.neighbors(0)))))
-    print("---")
-    print("Node 1 has {} neighbors".format(len(list(new_graph.neighbors(1)))))
-    print("---")
-    print("Continuous path present: {}".format(nx.has_path(new_graph, 0, 1)))
-    print("Shape of G matrix: {}".format(np.shape(G_matrix(new_graph))))
-    ########
+    #draw the networkx graph
+    nx.draw(new_graph, with_labels=True, font_weight='bold', node_size=100, font_size=9)
     
     #computes equiv. resistance
     if nx.has_path(new_graph, 0, 1):
@@ -289,56 +206,11 @@ def model(network_size,
     return eqr
 
 
-# In[ ]:
-
-
-
-
 # In[6]:
 
-np.random.seed(53)
-print(model(1000, CNT_length_normal, CNT_length_stddev, 30, 10, 1))
-
-
-# In[ ]:
-
-
-numsuccesses = 0
-numtens = 0
-for i in range(30):
-    print("--------------------")
-    try:
-        eqr = model(10, 10, 1, 1000)
-        print(eqr)
-        if not eqr == np.nan:
-            numsuccesses += 1
-        if eqr == 10:
-            numtens += 1
-    except:
-        pass
-print("numsuccesses = {}".format(numsuccesses))
-print("numtens = {}".format(numtens))
-
-
-# In[ ]:
-
-# Right now the challenge is this: it seems that often, the result is an equivalent resistance of exactly 10,
-# which seems to probably be wrong.
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-get_ipython().run_cell_magic('timeit', '', 'np.random.lognormal(CNT_length_normal,CNT_length_stddev)')
-
-
-# In[ ]:
-
-get_ipython().magic('pinfo np.random.rand')
+np.random.seed(42)
+print("Equivalent resistance: {} ohm/sq"
+      .format(model(1000, CNT_length_normal, CNT_length_stddev, 30, 10, 1)))
 
 
 # In[ ]:
