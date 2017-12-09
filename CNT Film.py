@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[3]:
 
 from matplotlib import pyplot as plt
 from matplotlib import pylab
@@ -13,13 +13,16 @@ from PIL import ImageDraw
 get_ipython().magic('matplotlib inline')
 
 
-# In[2]:
+# In[4]:
+
+#Setting the seed for consistency for debugging
+np.random.seed(53)
 
 #Important variables
 network_size = 1000 #side length of network boundaries
-CNT_length_normal = 1000 #normal length of CNT at center of distribution
-CNT_length_stddev = 2 #standard deviation of CNT length from normal
-CNT_num_tubes = 100 #number of tubes in film
+CNT_length_normal = 445 #normal length of CNT at center of distribution
+CNT_length_stddev = 310 #standard deviation of CNT length from normal
+CNT_num_tubes = 30 #number of tubes in film
 
 CNT_init = np.zeros((CNT_num_tubes+2,7))
 
@@ -29,7 +32,9 @@ CNT_init[0:2,:] = [[network_size,0,0,0,0,network_size,0],
 
 #Generating tube information
 #randomly assigning tube lengths distributed around a set tube length
-CNT_init[2:,0] = np.random.normal(CNT_length_normal, CNT_length_stddev, CNT_num_tubes)
+logmean = np.log(CNT_length_normal / (np.sqrt(1+(CNT_length_stddev/CNT_length_normal)**2)))
+logstdev = np.sqrt(np.log(1+(CNT_length_stddev/CNT_length_normal)**2))
+CNT_init[2:,0] = np.random.lognormal(logmean, logstdev, CNT_num_tubes)
 
 #randomly assign starting point and orientation
 CNT_init[2:,1:4] = np.random.rand(CNT_num_tubes, 3)
@@ -50,11 +55,12 @@ CNT_init[:,3] = np.tan(CNT_init[:,3])
 #calculating the y-intercept of the lines
 CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 
+print(CNT_init[:,2])
 #delete this in final code this is just a reference to know what is in each column
 #header = ['Length','x1','y1','slope','y-intercept','x2','y2']
 
 
-# In[3]:
+# In[5]:
 
 #WORK ON FIXING SECOND Y-VALUES, THEY ARE ALL POSITIVE AND BETWEEN 0 AND 1000
 #generating the endpoints for the tubes in the network
@@ -63,7 +69,29 @@ CNT_endpoints[:,0:2] = CNT_init[2:,1:3]
 CNT_endpoints[:,2:4] = CNT_init[2:,5:7]
 
 
-# In[5]:
+# In[6]:
+
+#generating a boolean array of the tubes that intersect
+CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
+for i in range(0,CNT_num_tubes):
+    m1 = CNT_init[i,3]
+    b1 = CNT_init[i,4]
+    for j in range(i+1,CNT_num_tubes):
+        #checking for parallel tubes
+        if m1 == CNT_init[j,3]:
+            CNT_intersect[i,j] = False
+            continue
+        x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
+        y_intersect = CNT_init[i,3] * x_intersect + CNT_init[i,4] 
+        
+        if (CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and 
+            CNT_init[j,1] <= x_intersect <= CNT_init[j,5] and 
+            0 <= x_intersect <= network_size and 
+            0 <= y_intersect <= network_size):
+            CNT_intersect[i,j] = True
+
+
+# In[7]:
 
 #size of image
 image_size = (network_size, network_size) #pixles
@@ -84,7 +112,7 @@ plt.show()
 image.save('CNT_network_test.png')
 
 
-# In[6]:
+# In[8]:
 
 #THIS IS THE EXAMPLE WITH NOTES FOR CLARITY
 import random as rnd
@@ -117,30 +145,9 @@ plt.imshow(np.asarray(im), origin='lower')
 plt.show()
 
 
-# In[7]:
-
-#generating a boolean array of the tubes that intersect
-CNT_intersect = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
-for i in range(0,CNT_num_tubes):
-    m1 = CNT_init[i,3]
-    b1 = CNT_init[i,4]
-    for j in range(i+1,CNT_num_tubes):
-        #checking for parallel tubes
-        if m1 == CNT_init[j,3]:
-            CNT_intersect[i,j] = False
-            continue
-        x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
-        y_intersect = CNT_init[i,3] * x_intersect + CNT_init[i,4] 
-        
-        #FIX THIS SO IT INCLUDES THE Y-RANGE AND MAKE SURE THAT THE RANGES ARE WITHIN THE NETWORK BOUNDS
-        #POSSIBLY USE CNT_ENDPOINTS FOR THIS
-        if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5] and 0 <= x_intersect <= network_size and 0 <= y_intersect <= network_size:
-            CNT_intersect[i,j] = True
-
-
 # Printing this boolean array will be a lot of information, especially as the number of tubes in the network grows. Since it is a boolean array and there are only two possible values, it will be easier to visualize and understand how many intersections there are by turning the array into an image where True is one color and False is another.
 
-# In[8]:
+# In[9]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 #this cell visually shows the true values as yellow pixels
@@ -156,14 +163,14 @@ for i in range(0,CNT_num_tubes):
         if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
             CNT_intersectALL[i,j] = True
 
-pylab.imshow(CNT_intersect)
+pylab.imshow(CNT_intersect, origin='lower')
 CNT_perTubeIntersect = np.sum(CNT_intersect,axis=1)
 print('The number of intersections in the network is {}.'.format(np.sum(CNT_intersect)))
 print('Below is a list where each element represents how many intersections the respective tube has:')
 print(CNT_perTubeIntersect)
 
 
-# In[27]:
+# In[10]:
 
 #gives the indicies along the x-axis of the true values as the 
 #first array and the y-values as the second array
@@ -178,17 +185,16 @@ print(CNT_tube_num2)
 print(edges)
 
 
-# In[31]:
+# In[11]:
 
 #generating a boolean array of the tubes that intersect and creating the G-matrix from that data
-G_matrix = np.zeros((CNT_num_tubes,CNT_num_tubes),dtype=bool)
+G_matrix = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
 for i in range(0,CNT_num_tubes):
     m1 = CNT_init[i,3]
     b1 = CNT_init[i,4]
     for j in range(0,CNT_num_tubes):
         #Preventing errors from checking if a line intersects with itself
-        if i == j:
-            G_matrix[i,j] = False
+        if i == j or m1 == CNT_init[j,3]:
             continue
         x_intersect = (CNT_init[j,4] - b1) / (m1 - CNT_init[j,3])
         if CNT_init[i,1] <= x_intersect <= CNT_init[i,5] and CNT_init[j,1] <= x_intersect <= CNT_init[j,5]:
@@ -196,10 +202,10 @@ for i in range(0,CNT_num_tubes):
 G_matrix = G_matrix * 2
 for k in range(0,CNT_num_tubes):
     G_matrix[k,k] = np.sum(G_matrix[k,:])
-pylab.imshow(G_matrix)
+pylab.imshow(G_matrix, origin='lower')
 
 
-# In[34]:
+# In[12]:
 
 a = np.array([[3,1], [1,2]])
 b = np.array([9,8])
@@ -209,7 +215,7 @@ print(b)
 print(x)
 
 
-# In[ ]:
+# In[13]:
 
 # We will use the wonderfully useful library networkx to allow us
 # to represent graphs in a nice way.
@@ -231,7 +237,7 @@ edges = [
 example_graph.add_edges_from(edges)
 
 
-# In[4]:
+# In[14]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 def num_intersect(network_size, CNT_length_normal, CNT_length_stddev, CNT_num_tubes, num_iterations=1000):
@@ -280,7 +286,7 @@ def num_intersect(network_size, CNT_length_normal, CNT_length_stddev, CNT_num_tu
     plt.show()
 
 
-# In[5]:
+# In[15]:
 
 #THIS CELL IS ONLY FOR TROUBLESHOOTING, IT DOES NOT CODE FOR ANYTHING
 #run this cell to get a histogram of the number of connections for the given conditions
@@ -335,6 +341,11 @@ def EOL(endpoint_1,endpoint_2):
     #finding range of x-values the segment runs for to make determining intersection easier
     x_range = [np.min(x1,x2),np.max(x1,x2)]
     return slope, y_intercept, x_range
+
+
+# In[16]:
+
+import this
 
 
 # In[ ]:
