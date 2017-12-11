@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[114]:
+# In[127]:
 
 from ipywidgets import widgets, interact
 from IPython.display import display
@@ -18,7 +18,8 @@ from PIL import ImageDraw
 import seaborn as sbn
 #sbn.set_context("talk", font_scale=1)
 from IPython.core.pylabtools import figsize
-figsize(12, 10)
+figsize(10, 6)
+
 
 from SALib.sample import morris as ms
 from SALib.analyze import morris as ma
@@ -349,7 +350,7 @@ plt.savefig("SA_results_summary.png")
 np.max(finite_results)
 
 
-# In[110]:
+# In[128]:
 
 netsize, lenmean, lensd, numtubes, resmean, ressd = finite_parameters.T
 
@@ -358,38 +359,43 @@ results_to_plot = finite_results.copy()
 results_to_plot[results_to_plot>20000] = np.nan
 
 # Make some scatter plots to compare the results
-plt.subplot(241)
+plt.subplot(231)
 plt.scatter(netsize, results_to_plot, alpha=0.2)
 plt.title("Network size (nm)")
 plt.ylabel("Equivalent resistance (ohm/sq)")
 
-plt.subplot(242)
+plt.subplot(232)
 plt.scatter(lenmean, results_to_plot, alpha=0.2)
 plt.title("Length mean (nm)")
 #plt.ylabel("Equivalent resistance (ohm/sq)")
 
-plt.subplot(243)
+plt.subplot(233)
 plt.scatter(lensd, results_to_plot, alpha=0.2)
 plt.title("Length St.dev (nm)")
 #plt.ylabel("Equivalent resistance (ohm/sq)")
 
-plt.subplot(245)
+plt.subplot(234)
 plt.scatter(numtubes, results_to_plot, alpha=0.2)
 plt.title("Number of CNTs")
-plt.ylabel("Equivalent resistance (ohm/sq)")
+#plt.ylabel("Equivalent resistance (ohm/sq)")
 
-plt.subplot(246)
+plt.subplot(235)
 plt.scatter(resmean, results_to_plot, alpha=0.2)
 plt.title("Resistance mean")
 #plt.ylabel("Equivalent resistance (ohm/sq)")
 
-plt.subplot(247)
+plt.subplot(236)
 plt.scatter(ressd, results_to_plot, alpha=0.2)
 plt.title("Resistance St.dev.")
 #plt.ylabel("Equivalent resistance (ohm/sq)")
 
 plt.tight_layout()
 plt.savefig('SA_results_scatter.png')
+
+
+# In[122]:
+
+get_ipython().magic('pinfo plt.subplot')
 
 
 # In[ ]:
