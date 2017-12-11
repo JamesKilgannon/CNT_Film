@@ -18,7 +18,7 @@ from SALib.analyze import morris as ma
 from SALib.plotting import morris as mp
 
 
-# In[41]:
+# In[2]:
 
 # Functions for equivalent resistance calculation
 def G_matrix(graph):
@@ -187,7 +187,7 @@ def model(network_size,
 #resistance_stddev = 1
 
 
-# In[4]:
+# In[3]:
 
 #Defining the problem
 morris_problem = {
@@ -208,22 +208,22 @@ morris_problem = {
     }
 
 
-# In[78]:
+# In[4]:
 
 num_levels = 50
 grid_jump = 2
-sample = ms.sample(morris_problem, 50, num_levels, grid_jump)
+sample = ms.sample(morris_problem, 1000, num_levels, grid_jump)
 #forcing the number of tubes to be an integer so no errors are thrown
 #sample[:,3] = np.around(sample[:,3])
 
 
-# In[79]:
+# In[5]:
 
 print(sample.shape)
 print(sample)
 
 
-# In[ ]:
+# In[6]:
 
 ##run this to recreate error
 #sample = np.load('sample_input_error.npy')
@@ -232,7 +232,7 @@ print(sample)
 #print(sample)
 
 
-# In[51]:
+# In[7]:
 
 print(sample.shape[0])
 print(sample[0])
@@ -266,12 +266,40 @@ np.save("CNT_results.npy", np.array(equivalent_resistance_results))
 
 
 
-# In[80]:
+# In[8]:
 
 np.save("CNT_parameters.npy", sample)
 
 
-# In[81]:
+# In[9]:
 
 print((np.load("CNT_parameters.npy").shape))
+
+
+# # Analysis section
+
+# In[39]:
+
+# import all of the CNT data files 
+filepath = "/Users/mplajer/Dropbox/Documents/Northeastern/CHME 5137 - Computational Modeling/Project - CNT Films/CNT_Film/CNT/CNT_results_"
+
+
+for index in range(350):
+    load_filename = filepath + str(index) + ".npy"
+    array = (np.load(load_filename))
+    if index == 0:
+        results = array
+    else:
+        results = np.concatenate((results, array))
+print(results.shape)
+
+
+# In[40]:
+
+np.save("CNT_results_combined.npy", results)
+
+
+# In[ ]:
+
+
 
