@@ -1,15 +1,20 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[11]:
 
+from ipywidgets import widgets, interact
+from IPython.display import display
 from matplotlib import pyplot as plt
 from matplotlib import pylab #displays arrays as images for easy error checking
 import numpy as np
 import scipy as sp
 import networkx as nx
+import seaborn as sbn
 from PIL import Image
 from PIL import ImageDraw
+from IPython.core.pylabtools import figsize
+figsize(12, 10)
 get_ipython().magic('matplotlib inline')
 
 
@@ -107,7 +112,7 @@ def draw_network(network_size, CNT_endpoints, contiguous_nodes):
     image.save('CNT_network.png')
 
 
-# In[5]:
+# In[7]:
 
 #Important variables
 network_size = 10 #side length of network boundaries
@@ -195,7 +200,8 @@ def model(network_size,
     draw_network(network_size, CNT_endpoints, contiguous_nodes)
     
     #draw the networkx graph
-    nx.draw(new_graph, with_labels=True, font_weight='bold', node_size=100, font_size=9)
+    nx.draw(new_graph, with_labels=True, font_weight='bold')
+    plt.savefig("networkx_drawing.png")
     
     #computes equiv. resistance
     if nx.has_path(new_graph, 0, 1):
@@ -210,7 +216,7 @@ def model(network_size,
     return eqr
 
 
-# In[6]:
+# In[12]:
 
 np.random.seed(42)
 print("Equivalent resistance: {} ohm/sq"
