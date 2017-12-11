@@ -208,16 +208,16 @@ morris_problem = {
     }
 
 
-# In[7]:
+# In[78]:
 
-num_levels = 4
+num_levels = 50
 grid_jump = 2
-sample = ms.sample(morris_problem, 1, num_levels, grid_jump)
+sample = ms.sample(morris_problem, 50, num_levels, grid_jump)
 #forcing the number of tubes to be an integer so no errors are thrown
 #sample[:,3] = np.around(sample[:,3])
 
 
-# In[8]:
+# In[79]:
 
 print(sample.shape)
 print(sample)
@@ -238,9 +238,6 @@ print(sample.shape[0])
 print(sample[0])
 for row in sample:
     print(row)
-
-
-# In[52]:
 
 # Run the sample through the monte carlo procedure of the power model
 #for sampleindex in range(0,sample.shape[0]):
@@ -264,28 +261,17 @@ np.save("CNT_results.npy", np.array(equivalent_resistance_results))
 #print(output.shape)
 
 #print(max(output))
-
-
-# In[42]:
-
-# quick working example for testing
-sampleindex = 15
-np.random.seed(42)
-print("Equivalent resistance: {} ohm/sq"
-      .format(model(1000, 445, 310, 30, 10, 1)))
-
-
-# In[10]:
-
-#np.load('sample_working_input_array.npy') #this is an example for which the last 4 of 7 calculate properly 
-
-
-# In[20]:
-
-print(np.load)
-
-
 # In[ ]:
 
 
+
+
+# In[80]:
+
+np.save("CNT_parameters.npy", sample)
+
+
+# In[81]:
+
+print((np.load("CNT_parameters.npy").shape))
 

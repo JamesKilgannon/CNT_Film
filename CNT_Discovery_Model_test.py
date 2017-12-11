@@ -159,7 +159,7 @@ def model(network_size,
 
 #0: initialize
 job_number = int(os.getenv('SLURM_ARRAY_TASK_ID', default='0'))
-number_of_runs_per_job = 20
+number_of_runs_per_job = 3
 
 
 #1: get the parameters file into a np array
@@ -167,7 +167,7 @@ sample = np.load("CNT_parameters.npy")
 
 #2: run the model for each line of the np array
 equivalent_resistance_results = []
-for sampleindex in range(job_number * number_of_runs_per_job, (job_number * number_of_runs_per_job)+20):
+for sampleindex in range(job_number * number_of_runs_per_job, (job_number * number_of_runs_per_job)+3):
     parameters = sample[sampleindex]
     equivalent_resistance_results.append(model(*parameters))
 
