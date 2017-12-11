@@ -179,8 +179,12 @@ def model(network_size,
     
     #get rid of any bits of the graph not contiguous with node 0 (one of the test nodes)
     #thanks to Pieter Swart from 2006 [https://groups.google.com/forum/#!topic/networkx-discuss/XmP5wZhrDMI]
-    contiguous_nodes = nx.node_connected_component(graph, 0)
-    new_graph = graph.subgraph(contiguous_nodes)
+    try:
+        contiguous_nodes = nx.node_connected_component(graph, 0)
+        new_graph = graph.subgraph(contiguous_nodes)
+    except KeyError:
+        print("Could not compute equivalent resistance; the starting tube has no intersections")
+        path_exists = False
     
     #draw the network:
     #generating the endpoints for the tubes in the network

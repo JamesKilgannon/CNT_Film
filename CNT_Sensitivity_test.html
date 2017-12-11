@@ -11800,7 +11800,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Functions for equivalent resistance calculation</span>
@@ -11900,6 +11900,10 @@ div#notebook {
     <span class="c1">#calculating the y-intercept of the lines</span>
     <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">CNT_init</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
 
+    <span class="c1">#print CNT_init to file, indexing to the run number (hopefully)</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;CNT_data_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sampleindex</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.npy&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">CNT_init</span><span class="p">)</span>
+    
     <span class="c1">#generating a boolean array of the tubes that intersect</span>
     <span class="n">CNT_intersect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">CNT_num_tubes</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">CNT_num_tubes</span><span class="o">+</span><span class="mi">2</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
     
@@ -11921,11 +11925,20 @@ div#notebook {
     
     <span class="c1">#get rid of any bits of the graph not contiguous with node 0 (one of the test nodes)</span>
     <span class="c1">#thanks to Pieter Swart from 2006 [https://groups.google.com/forum/#!topic/networkx-discuss/XmP5wZhrDMI]</span>
-    <span class="n">contiguous_nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">node_connected_component</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">new_graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">contiguous_nodes</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">contiguous_nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">node_connected_component</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">new_graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">contiguous_nodes</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not compute equivalent resistance; the starting tube has no intersections&quot;</span><span class="p">)</span>
+        <span class="n">path_exists</span> <span class="o">=</span> <span class="kc">False</span>
     
     <span class="c1">#computes equiv. resistance</span>
-    <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">has_path</span><span class="p">(</span><span class="n">new_graph</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">path_exists</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">has_path</span><span class="p">(</span><span class="n">new_graph</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">path_exists</span> <span class="o">=</span> <span class="kc">False</span>
+    
+    <span class="k">if</span> <span class="n">path_exists</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">eqr</span> <span class="o">=</span> <span class="n">equivalent_resistance</span><span class="p">(</span><span class="n">new_graph</span><span class="p">,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">except</span><span class="p">:</span>
@@ -11964,7 +11977,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Defining the problem</span>
@@ -11993,7 +12006,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">num_levels</span> <span class="o">=</span> <span class="mi">4</span>
@@ -12010,10 +12023,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
 </pre></div>
 
@@ -12029,20 +12042,21 @@ div#notebook {
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[[  1.00000000e+04   1.00000000e+03   1.00000000e+02   1.00000000e+02
-    1.00000000e+00   1.36666667e+01]
- [  1.00000000e+04   1.00000000e+03   1.00000000e+02   1.00000000e+02
-    6.70000000e+01   1.36666667e+01]
- [  4.00000000e+03   1.00000000e+03   1.00000000e+02   1.00000000e+02
-    6.70000000e+01   1.36666667e+01]
- [  4.00000000e+03   1.00000000e+03   1.00000000e+02   3.36666667e+03
-    6.70000000e+01   1.36666667e+01]
- [  4.00000000e+03   1.00000000e+03   3.66666667e+02   3.36666667e+03
-    6.70000000e+01   1.36666667e+01]
- [  4.00000000e+03   4.00000000e+02   3.66666667e+02   3.36666667e+03
-    6.70000000e+01   1.36666667e+01]
- [  4.00000000e+03   4.00000000e+02   3.66666667e+02   3.36666667e+03
-    6.70000000e+01   1.00000000e+00]]
+<pre>(7, 6)
+[[  1.00000000e+04   1.00000000e+02   5.00000000e+02   1.00000000e+02
+    1.00000000e+02   2.00000000e+01]
+ [  1.00000000e+04   1.00000000e+02   5.00000000e+02   3.36666667e+03
+    1.00000000e+02   2.00000000e+01]
+ [  1.00000000e+04   1.00000000e+02   5.00000000e+02   3.36666667e+03
+    1.00000000e+02   7.33333333e+00]
+ [  4.00000000e+03   1.00000000e+02   5.00000000e+02   3.36666667e+03
+    1.00000000e+02   7.33333333e+00]
+ [  4.00000000e+03   1.00000000e+02   5.00000000e+02   3.36666667e+03
+    3.40000000e+01   7.33333333e+00]
+ [  4.00000000e+03   7.00000000e+02   5.00000000e+02   3.36666667e+03
+    3.40000000e+01   7.33333333e+00]
+ [  4.00000000e+03   7.00000000e+02   2.33333333e+02   3.36666667e+03
+    3.40000000e+01   7.33333333e+00]]
 </pre>
 </div>
 </div>
@@ -12053,13 +12067,30 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#run this cell to recreate error</span>
-<span class="n">sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;sample_input_error.npy&#39;</span><span class="p">)</span>
-<span class="c1">#shows the variables that will return the error</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">T</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">##run this to recreate error</span>
+<span class="c1">#sample = np.load(&#39;sample_input_error.npy&#39;)</span>
+<span class="c1">##shows the variables that will return the error</span>
+<span class="c1">#print(sample.shape)</span>
+<span class="c1">#print(sample)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12074,8 +12105,21 @@ div#notebook {
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[ 10000.           1000.            100.            100.             67.
-     13.66666667]
+<pre>7
+[ 10000.    100.    500.    100.    100.     20.]
+[ 10000.    100.    500.    100.    100.     20.]
+[ 10000.            100.            500.           3366.66666667    100.
+     20.        ]
+[  1.00000000e+04   1.00000000e+02   5.00000000e+02   3.36666667e+03
+   1.00000000e+02   7.33333333e+00]
+[ 4000.           100.           500.          3366.66666667   100.
+     7.33333333]
+[ 4000.           100.           500.          3366.66666667    34.
+     7.33333333]
+[ 4000.           700.           500.          3366.66666667    34.
+     7.33333333]
+[ 4000.           700.           233.33333333  3366.66666667    34.
+     7.33333333]
 </pre>
 </div>
 </div>
@@ -12086,15 +12130,31 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[52]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Run the sample through the monte carlo procedure of the power model</span>
-<span class="c1">#for i in range(0,sample.shape[0]):</span>
-<span class="c1">#    output = model(*sample.T[:,i])</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">*</span><span class="n">sample</span><span class="o">.</span><span class="n">T</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+<span class="c1">#for sampleindex in range(0,sample.shape[0]):</span>
+<span class="c1">#    output = model(*sample.T[:,sampleindex])</span>
+<span class="c1">#    print(sampleindex)</span>
+<span class="c1">#    print(sample.T[:,sampleindex])</span>
+<span class="c1">#    print(output)</span>
+
+<span class="n">equivalent_resistance_results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">sampleindex</span><span class="p">,</span> <span class="n">parameters</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
+    <span class="n">equivalent_resistance_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="o">*</span><span class="n">parameters</span><span class="p">))</span>
+    
+    <span class="c1">#remove the line below this one</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished run index </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sampleindex</span><span class="p">))</span>
+    
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">equivalent_resistance_results</span><span class="p">)</span> <span class="o">==</span> <span class="n">sample</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;CNT_results.npy&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">equivalent_resistance_results</span><span class="p">))</span>
+
+<span class="c1">#output = model(*sample.T[:,1])</span>
+<span class="c1">#print(output.shape)</span>
+
+<span class="c1">#print(max(output))</span>
 </pre></div>
 
 </div>
@@ -12108,46 +12168,37 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NodeNotFound</span>                              Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-19-fff744fd40c4&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-intense-fg ansi-bold">      2</span> <span class="ansi-red-fg">#for i in range(0,sample.shape[0]):</span>
-<span class="ansi-green-intense-fg ansi-bold">      3</span> <span class="ansi-red-fg">#    output = model(*sample.T[:,i])</span>
-<span class="ansi-green-fg">----&gt; 4</span><span class="ansi-red-fg"> </span>output <span class="ansi-blue-fg">=</span> model<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>sample<span class="ansi-blue-fg">.</span>T<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      5</span> print<span class="ansi-blue-fg">(</span>output<span class="ansi-blue-fg">.</span>shape<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      6</span> print<span class="ansi-blue-fg">(</span>max<span class="ansi-blue-fg">(</span>output<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Could not compute equivalent resistance; the starting tube has no intersections
+Could not compute equivalent resistance; there is no contiguous path through the network.
+Finished run index 0
+Could not compute equivalent resistance; there is no contiguous path through the network.
+Finished run index 1
+Could not compute equivalent resistance; there is no contiguous path through the network.
+Finished run index 2
+</pre>
+</div>
+</div>
 
-<span class="ansi-green-fg">&lt;ipython-input-2-f5c5d29b05bc&gt;</span> in <span class="ansi-cyan-fg">model</span><span class="ansi-blue-fg">(network_size, CNT_length_normal, CNT_length_stddev, CNT_num_tubes, resistance_mean, resistance_stddev)</span>
-<span class="ansi-green-intense-fg ansi-bold">    121</span> 
-<span class="ansi-green-intense-fg ansi-bold">    122</span>     <span class="ansi-red-fg">#computes equiv. resistance</span>
-<span class="ansi-green-fg">--&gt; 123</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">if</span> nx<span class="ansi-blue-fg">.</span>has_path<span class="ansi-blue-fg">(</span>new_graph<span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    124</span>         <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    125</span>             eqr <span class="ansi-blue-fg">=</span> equivalent_resistance<span class="ansi-blue-fg">(</span>new_graph<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
+<div class="output_area">
+<div class="prompt"></div>
 
-<span class="ansi-green-fg">/Users/Jimmie/anaconda/lib/python3.6/site-packages/networkx/algorithms/shortest_paths/generic.py</span> in <span class="ansi-cyan-fg">has_path</span><span class="ansi-blue-fg">(G, source, target)</span>
-<span class="ansi-green-intense-fg ansi-bold">     38</span>     &#34;&#34;&#34;
-<span class="ansi-green-intense-fg ansi-bold">     39</span>     <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">---&gt; 40</span><span class="ansi-red-fg">         </span>sp <span class="ansi-blue-fg">=</span> nx<span class="ansi-blue-fg">.</span>shortest_path<span class="ansi-blue-fg">(</span>G<span class="ansi-blue-fg">,</span> source<span class="ansi-blue-fg">,</span> target<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     41</span>     <span class="ansi-green-fg">except</span> nx<span class="ansi-blue-fg">.</span>NetworkXNoPath<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">     42</span>         <span class="ansi-green-fg">return</span> <span class="ansi-green-fg">False</span>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/mplajer/anaconda/lib/python3.6/site-packages/scipy/sparse/compressed.py:774: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  SparseEfficiencyWarning)
+</pre>
+</div>
+</div>
 
-<span class="ansi-green-fg">/Users/Jimmie/anaconda/lib/python3.6/site-packages/networkx/algorithms/shortest_paths/generic.py</span> in <span class="ansi-cyan-fg">shortest_path</span><span class="ansi-blue-fg">(G, source, target, weight)</span>
-<span class="ansi-green-intense-fg ansi-bold">    140</span>             <span class="ansi-red-fg"># Find shortest source-target path.</span>
-<span class="ansi-green-intense-fg ansi-bold">    141</span>             <span class="ansi-green-fg">if</span> weight <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 142</span><span class="ansi-red-fg">                 </span>paths <span class="ansi-blue-fg">=</span> nx<span class="ansi-blue-fg">.</span>bidirectional_shortest_path<span class="ansi-blue-fg">(</span>G<span class="ansi-blue-fg">,</span> source<span class="ansi-blue-fg">,</span> target<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    143</span>             <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    144</span>                 paths <span class="ansi-blue-fg">=</span> nx<span class="ansi-blue-fg">.</span>dijkstra_path<span class="ansi-blue-fg">(</span>G<span class="ansi-blue-fg">,</span> source<span class="ansi-blue-fg">,</span> target<span class="ansi-blue-fg">,</span> weight<span class="ansi-blue-fg">)</span>
+<div class="output_area">
+<div class="prompt"></div>
 
-<span class="ansi-green-fg">/Users/Jimmie/anaconda/lib/python3.6/site-packages/networkx/algorithms/shortest_paths/unweighted.py</span> in <span class="ansi-cyan-fg">bidirectional_shortest_path</span><span class="ansi-blue-fg">(G, source, target)</span>
-<span class="ansi-green-intense-fg ansi-bold">    221</span>     <span class="ansi-green-fg">if</span> source <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">in</span> G <span class="ansi-green-fg">or</span> target <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">in</span> G<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    222</span>         msg <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;Either source {} or target {} is not in G&#39;</span>
-<span class="ansi-green-fg">--&gt; 223</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">raise</span> nx<span class="ansi-blue-fg">.</span>NodeNotFound<span class="ansi-blue-fg">(</span>msg<span class="ansi-blue-fg">.</span>format<span class="ansi-blue-fg">(</span>source<span class="ansi-blue-fg">,</span> target<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    224</span> 
-<span class="ansi-green-intense-fg ansi-bold">    225</span>     <span class="ansi-red-fg"># call helper to do the real work</span>
-
-<span class="ansi-red-fg">NodeNotFound</span>: Either source 0 or target 1 is not in G</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Finished run index 3
+Finished run index 4
+Finished run index 5
+Finished run index 6
+</pre>
 </div>
 </div>
 
@@ -12157,10 +12208,66 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># quick working example for testing</span>
+<span class="n">sampleindex</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Equivalent resistance: </span><span class="si">{}</span><span class="s2"> ohm/sq&quot;</span>
+      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">445</span><span class="p">,</span> <span class="mi">310</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Equivalent resistance: 6.639653081855966 ohm/sq
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/mplajer/anaconda/lib/python3.6/site-packages/scipy/sparse/compressed.py:774: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  SparseEfficiencyWarning)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#np.load(&#39;sample_working_input_array.npy&#39;) #this is an example for which the last 4 of 7 calculate properly </span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">)</span>
 </pre></div>
 
 </div>

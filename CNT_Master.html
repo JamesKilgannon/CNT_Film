@@ -11986,8 +11986,12 @@ div#notebook {
     
     <span class="c1">#get rid of any bits of the graph not contiguous with node 0 (one of the test nodes)</span>
     <span class="c1">#thanks to Pieter Swart from 2006 [https://groups.google.com/forum/#!topic/networkx-discuss/XmP5wZhrDMI]</span>
-    <span class="n">contiguous_nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">node_connected_component</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">new_graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">contiguous_nodes</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">contiguous_nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">node_connected_component</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">new_graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">contiguous_nodes</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not compute equivalent resistance; the starting tube has no intersections&quot;</span><span class="p">)</span>
+        <span class="n">path_exists</span> <span class="o">=</span> <span class="kc">False</span>
     
     <span class="c1">#draw the network:</span>
     <span class="c1">#generating the endpoints for the tubes in the network</span>

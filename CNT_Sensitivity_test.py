@@ -18,7 +18,7 @@ from SALib.analyze import morris as ma
 from SALib.plotting import morris as mp
 
 
-# In[2]:
+# In[41]:
 
 # Functions for equivalent resistance calculation
 def G_matrix(graph):
@@ -117,6 +117,10 @@ def model(network_size,
     #calculating the y-intercept of the lines
     CNT_init[:,4] = CNT_init[:,2] - CNT_init[:,3] * CNT_init[:,2]
 
+    #print CNT_init to file, indexing to the run number (hopefully)
+    filename = "CNT_data_" + str(sampleindex) + ".npy"
+    np.save(filename, CNT_init)
+    
     #generating a boolean array of the tubes that intersect
     CNT_intersect = np.zeros((CNT_num_tubes+2,CNT_num_tubes+2),dtype=bool)
     
@@ -138,11 +142,20 @@ def model(network_size,
     
     #get rid of any bits of the graph not contiguous with node 0 (one of the test nodes)
     #thanks to Pieter Swart from 2006 [https://groups.google.com/forum/#!topic/networkx-discuss/XmP5wZhrDMI]
-    contiguous_nodes = nx.node_connected_component(graph, 0)
-    new_graph = graph.subgraph(contiguous_nodes)
+    try:
+        contiguous_nodes = nx.node_connected_component(graph, 0)
+        new_graph = graph.subgraph(contiguous_nodes)
+    except KeyError:
+        print("Could not compute equivalent resistance; the starting tube has no intersections")
+        path_exists = False
     
     #computes equiv. resistance
-    if nx.has_path(new_graph, 0, 1):
+    try:
+        path_exists = nx.has_path(new_graph, 0, 1)
+    except:
+        path_exists = False
+    
+    if path_exists:
         try:
             eqr = equivalent_resistance(new_graph,[0,1])
         except:
@@ -174,7 +187,7 @@ def model(network_size,
 #resistance_stddev = 1
 
 
-# In[3]:
+# In[4]:
 
 #Defining the problem
 morris_problem = {
@@ -195,7 +208,7 @@ morris_problem = {
     }
 
 
-# In[4]:
+# In[7]:
 
 num_levels = 4
 grid_jump = 2
@@ -204,33 +217,72 @@ sample = ms.sample(morris_problem, 1, num_levels, grid_jump)
 #sample[:,3] = np.around(sample[:,3])
 
 
-# In[10]:
+# In[8]:
 
-sample.shape
+print(sample.shape)
 print(sample)
 
 
-# In[18]:
+# In[ ]:
 
-#run this cell to recreate error
-sample = np.load('sample_input_error.npy')
-#shows the variables that will return the error
-print(sample.T[:,1])
+##run this to recreate error
+#sample = np.load('sample_input_error.npy')
+##shows the variables that will return the error
+#print(sample.shape)
+#print(sample)
 
 
-# In[19]:
+# In[51]:
+
+print(sample.shape[0])
+print(sample[0])
+for row in sample:
+    print(row)
+
+
+# In[52]:
 
 # Run the sample through the monte carlo procedure of the power model
-#for i in range(0,sample.shape[0]):
-#    output = model(*sample.T[:,i])
-output = model(*sample.T[:,1])
-print(output.shape)
-print(max(output))
+#for sampleindex in range(0,sample.shape[0]):
+#    output = model(*sample.T[:,sampleindex])
+#    print(sampleindex)
+#    print(sample.T[:,sampleindex])
+#    print(output)
+
+equivalent_resistance_results = []
+for sampleindex, parameters in enumerate(sample):
+    equivalent_resistance_results.append(model(*parameters))
+    
+    #remove the line below this one
+    print("Finished run index {}".format(sampleindex))
+    
+assert len(equivalent_resistance_results) == sample.shape[0]
+
+np.save("CNT_results.npy", np.array(equivalent_resistance_results))
+
+#output = model(*sample.T[:,1])
+#print(output.shape)
+
+#print(max(output))
 
 
-# In[14]:
+# In[42]:
+
+# quick working example for testing
+sampleindex = 15
+np.random.seed(42)
+print("Equivalent resistance: {} ohm/sq"
+      .format(model(1000, 445, 310, 30, 10, 1)))
 
 
+# In[10]:
+
+#np.load('sample_working_input_array.npy') #this is an example for which the last 4 of 7 calculate properly 
+
+
+# In[20]:
+
+print(np.load)
 
 
 # In[ ]:
