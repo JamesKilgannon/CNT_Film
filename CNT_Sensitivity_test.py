@@ -1,8 +1,11 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[114]:
 
+from ipywidgets import widgets, interact
+from IPython.display import display
+get_ipython().magic('matplotlib inline')
 import matplotlib
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
@@ -12,6 +15,10 @@ import scipy as sp
 import networkx as nx
 from PIL import Image
 from PIL import ImageDraw
+import seaborn as sbn
+#sbn.set_context("talk", font_scale=1)
+from IPython.core.pylabtools import figsize
+figsize(12, 10)
 
 from SALib.sample import morris as ms
 from SALib.analyze import morris as ma
@@ -278,7 +285,7 @@ print((np.load("CNT_parameters.npy").shape))
 
 # # Analysis section
 
-# In[39]:
+# In[71]:
 
 # import all of the CNT data files 
 filepath = "/Users/mplajer/Dropbox/Documents/Northeastern/CHME 5137 - Computational Modeling/Project - CNT Films/CNT_Film/CNT/CNT_results_"
@@ -294,9 +301,95 @@ for index in range(350):
 print(results.shape)
 
 
-# In[40]:
+# In[72]:
 
 np.save("CNT_results_combined.npy", results)
+print(results)
+
+
+# In[58]:
+
+# remove nan
+
+finite_results = results[np.isfinite(results)]
+print(finite_results.shape)
+
+
+# In[79]:
+
+print("{} of the runs returned NaN, or {}%".format(-finite_results.shape[0]+results.shape[0], -(finite_results.shape[0]-results.shape[0])/finite_results.shape[0]*100))
+
+
+# In[59]:
+
+parameters = np.load("CNT_parameters.npy")
+finite_parameters = parameters[np.isfinite(results)]
+print(finite_parameters.shape)
+
+
+# In[64]:
+
+# Store the results for plotting of the analysis
+Si = ma.analyze(morris_problem, finite_parameters[:5852], finite_results[:5852], print_to_console=False, grid_jump=grid_jump, num_levels=num_levels)
+print("{:20s} {:>7s} {:>7s} {:>7s}".format("Name", "mu", "mu_star", "sigma"))
+for name, s1, st, mean in zip(morris_problem['names'], Si['mu'], Si['mu_star'], Si['sigma']):
+    print("{:20s} {:=7.2f} {:=7.2f} {:=7.2f}".format(name, s1, st, mean))
+
+
+# In[115]:
+
+fig, (ax1, ax2) = plt.subplots(1,2)
+mp.horizontal_bar_plot(ax1, Si, param_dict={})
+mp.covariance_plot(ax2, Si, {})
+plt.savefig("SA_results_summary.png")
+
+
+# In[99]:
+
+np.max(finite_results)
+
+
+# In[110]:
+
+netsize, lenmean, lensd, numtubes, resmean, ressd = finite_parameters.T
+
+#we need to remove one outlier value to make the charts look nice
+results_to_plot = finite_results.copy()
+results_to_plot[results_to_plot>20000] = np.nan
+
+# Make some scatter plots to compare the results
+plt.subplot(241)
+plt.scatter(netsize, results_to_plot, alpha=0.2)
+plt.title("Network size (nm)")
+plt.ylabel("Equivalent resistance (ohm/sq)")
+
+plt.subplot(242)
+plt.scatter(lenmean, results_to_plot, alpha=0.2)
+plt.title("Length mean (nm)")
+#plt.ylabel("Equivalent resistance (ohm/sq)")
+
+plt.subplot(243)
+plt.scatter(lensd, results_to_plot, alpha=0.2)
+plt.title("Length St.dev (nm)")
+#plt.ylabel("Equivalent resistance (ohm/sq)")
+
+plt.subplot(245)
+plt.scatter(numtubes, results_to_plot, alpha=0.2)
+plt.title("Number of CNTs")
+plt.ylabel("Equivalent resistance (ohm/sq)")
+
+plt.subplot(246)
+plt.scatter(resmean, results_to_plot, alpha=0.2)
+plt.title("Resistance mean")
+#plt.ylabel("Equivalent resistance (ohm/sq)")
+
+plt.subplot(247)
+plt.scatter(ressd, results_to_plot, alpha=0.2)
+plt.title("Resistance St.dev.")
+#plt.ylabel("Equivalent resistance (ohm/sq)")
+
+plt.tight_layout()
+plt.savefig('SA_results_scatter.png')
 
 
 # In[ ]:
